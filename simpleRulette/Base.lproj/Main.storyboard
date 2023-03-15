@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -10,19 +11,61 @@
         <!--Rulette View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="RuletteViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="RuletteViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="タイトル" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Op-hf-Pfj">
+                                <rect key="frame" x="0.0" y="59" width="393" height="55"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="Mfi-GJ-Hof"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrowtriangle.down" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Csn-8n-ogu">
+                                <rect key="frame" x="147" y="121.33333333333333" width="99" height="45.333333333333329"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="ind-5k-5lC"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fxP-Z6-xbD" customClass="PieChartView" customModule="Charts">
+                                <rect key="frame" x="0.0" y="169" width="393" height="300"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="bM9-VW-p4J"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fxP-Z6-xbD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="1eO-Qw-kq0"/>
+                            <constraint firstItem="8Op-hf-Pfj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="2v9-ba-dkR"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Csn-8n-ogu" secondAttribute="trailing" constant="147" id="B2m-Vg-ElJ"/>
+                            <constraint firstItem="Csn-8n-ogu" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="147" id="Jfd-Qa-gZe"/>
+                            <constraint firstItem="8Op-hf-Pfj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QaK-26-IOx"/>
+                            <constraint firstItem="fxP-Z6-xbD" firstAttribute="top" secondItem="Csn-8n-ogu" secondAttribute="bottom" id="QzJ-e0-Qo0"/>
+                            <constraint firstItem="fxP-Z6-xbD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="URd-kj-m5p"/>
+                            <constraint firstItem="Csn-8n-ogu" firstAttribute="top" secondItem="8Op-hf-Pfj" secondAttribute="bottom" constant="5" id="sef-RA-WTu"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="8Op-hf-Pfj" secondAttribute="trailing" id="wQu-mk-b0w"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="pieChartView" destination="fxP-Z6-xbD" id="mUA-Hg-Ra1"/>
+                        <outlet property="titleLabel" destination="8Op-hf-Pfj" id="SiI-Vb-IRu"/>
+                        <outlet property="triangleImage" destination="Csn-8n-ogu" id="jpu-TH-51q"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-2.2900763358778624" y="3.5211267605633805"/>
         </scene>
     </scenes>
     <resources>
+        <image name="arrowtriangle.down" catalog="system" width="128" height="120"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
