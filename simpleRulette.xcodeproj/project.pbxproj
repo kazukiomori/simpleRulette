@@ -10,7 +10,7 @@
 		197AF950FB17545A07197A4E /* Pods_simpleRulette_simpleRuletteUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4130E611CA83B154A546A8AC /* Pods_simpleRulette_simpleRuletteUITests.framework */; };
 		3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7229C153CC00158D35 /* AppDelegate.swift */; };
 		3BC38F7529C153CC00158D35 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7429C153CC00158D35 /* SceneDelegate.swift */; };
-		3BC38F7729C153CC00158D35 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7629C153CC00158D35 /* ViewController.swift */; };
+		3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7629C153CC00158D35 /* RuletteViewController.swift */; };
 		3BC38F7A29C153CC00158D35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BC38F7829C153CC00158D35 /* Main.storyboard */; };
 		3BC38F7C29C153CF00158D35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BC38F7B29C153CF00158D35 /* Assets.xcassets */; };
 		3BC38F7F29C153CF00158D35 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BC38F7D29C153CF00158D35 /* LaunchScreen.storyboard */; };
@@ -43,7 +43,7 @@
 		3BC38F6F29C153CC00158D35 /* simpleRulette.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleRulette.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC38F7229C153CC00158D35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BC38F7429C153CC00158D35 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		3BC38F7629C153CC00158D35 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3BC38F7629C153CC00158D35 /* RuletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteViewController.swift; sourceTree = "<group>"; };
 		3BC38F7929C153CC00158D35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3BC38F7B29C153CF00158D35 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3BC38F7E29C153CF00158D35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -128,7 +128,7 @@
 			children = (
 				3BC38F7229C153CC00158D35 /* AppDelegate.swift */,
 				3BC38F7429C153CC00158D35 /* SceneDelegate.swift */,
-				3BC38F7629C153CC00158D35 /* ViewController.swift */,
+				3BC38F7629C153CC00158D35 /* RuletteViewController.swift */,
 				3BC38F7829C153CC00158D35 /* Main.storyboard */,
 				3BC38F7B29C153CF00158D35 /* Assets.xcassets */,
 				3BC38F7D29C153CF00158D35 /* LaunchScreen.storyboard */,
@@ -164,7 +164,6 @@
 				8C7D3AEBC76B6DAE1331963F /* Pods-simpleRuletteTests.debug.xcconfig */,
 				8BF4D4F9F15DD8ACB991913A /* Pods-simpleRuletteTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -407,7 +406,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BC38F7729C153CC00158D35 /* ViewController.swift in Sources */,
+				3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */,
 				3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */,
 				3BC38F7529C153CC00158D35 /* SceneDelegate.swift in Sources */,
 			);

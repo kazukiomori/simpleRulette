@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Charts
 
-class ViewController: UIViewController {
+class RuletteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
