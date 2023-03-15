@@ -1,0 +1,6 @@
+framework module Pods_simpleRulette_simpleRuletteUITests {
+  umbrella header "Pods-simpleRulette-simpleRuletteUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
