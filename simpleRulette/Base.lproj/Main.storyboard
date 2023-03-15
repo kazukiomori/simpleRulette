@@ -38,24 +38,37 @@
                                     <constraint firstAttribute="height" constant="50" id="ind-5k-5lC"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Fr-dF-QSN">
+                                <rect key="frame" x="5" y="464" width="383" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="I5A-lP-Xdo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="8Op-hf-Pfj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="2v9-ba-dkR"/>
                             <constraint firstItem="Csn-8n-ogu" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="147" id="6tn-qT-6o1"/>
+                            <constraint firstItem="1Fr-dF-QSN" firstAttribute="top" secondItem="fxP-Z6-xbD" secondAttribute="bottom" constant="20" id="BQh-sx-fq3"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Csn-8n-ogu" secondAttribute="trailing" constant="147" id="PzV-se-Vdd"/>
                             <constraint firstItem="8Op-hf-Pfj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QaK-26-IOx"/>
                             <constraint firstItem="fxP-Z6-xbD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="gIF-Ne-ea2"/>
+                            <constraint firstItem="1Fr-dF-QSN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="5" id="hnA-VM-S0E"/>
                             <constraint firstItem="8Op-hf-Pfj" firstAttribute="top" secondItem="Csn-8n-ogu" secondAttribute="bottom" constant="-110" id="kUI-zR-SEH"/>
                             <constraint firstItem="fxP-Z6-xbD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="mco-8M-wEg"/>
                             <constraint firstItem="fxP-Z6-xbD" firstAttribute="top" secondItem="8Op-hf-Pfj" secondAttribute="bottom" constant="30" id="sUJ-Up-1ak"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="8Op-hf-Pfj" secondAttribute="trailing" id="wQu-mk-b0w"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1Fr-dF-QSN" secondAttribute="trailing" constant="5" id="wc6-nf-vVN"/>
                             <constraint firstItem="Csn-8n-ogu" firstAttribute="top" secondItem="8Op-hf-Pfj" secondAttribute="bottom" constant="5" id="whZ-E4-B7B"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="pieChartView" destination="fxP-Z6-xbD" id="mUA-Hg-Ra1"/>
+                        <outlet property="resultLabel" destination="1Fr-dF-QSN" id="gob-TE-WoN"/>
                         <outlet property="titleLabel" destination="8Op-hf-Pfj" id="SiI-Vb-IRu"/>
                         <outlet property="triangleImage" destination="Csn-8n-ogu" id="jpu-TH-51q"/>
                     </connections>

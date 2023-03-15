@@ -12,6 +12,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
+    @IBOutlet weak var resultLabel: UILabel!
     
     var buttonStartFlg = true
 
@@ -59,6 +60,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             animation.isCumulative = true
             pieChartView.layer.add(animation, forKey: "ImageViewRotation")
             buttonStartFlg = false
+            resultLabel.text = ""
         } else {
             self.pieChartView.centerText = "スタート"
             let pausedTime = pieChartView.layer.convertTime(CACurrentMediaTime(), from: nil)
@@ -92,10 +94,13 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 // 75...100 -> C
                 // 一般化するにはもう一工夫必要
                 if per < 40 {
+                    resultLabel.text = "A"
                     print("A")
                 } else if per < 40 + 35 {
+                    resultLabel.text = "B"
                     print("B")
                 } else {
+                    resultLabel.text = "C"
                     print("C")
                 }
             }
