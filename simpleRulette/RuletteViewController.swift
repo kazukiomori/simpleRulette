@@ -13,7 +13,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
     @IBOutlet weak var resultLabel: UILabel!
-    
+    @IBOutlet weak var addDataButton: UIButton!
+    @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
 
     override func viewDidLoad() {
