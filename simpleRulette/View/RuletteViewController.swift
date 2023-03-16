@@ -13,7 +13,6 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
     @IBOutlet weak var resultLabel: UILabel!
-    @IBOutlet weak var addDataButton: UIButton!
     @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
 
@@ -107,5 +106,40 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
     }
+    
+    @IBAction func tappedAddDataButton(_ sender: Any) {
+        let actionSheet = UIAlertController(title: "データをセット", message: "", preferredStyle: UIAlertController.Style.actionSheet)
+        
+        // 表示させたいタイトル1ボタンが押された時の処理をクロージャ実装する
+        let action1 = UIAlertAction(title: "新規追加", style: UIAlertAction.Style.default, handler: {
+            (action: UIAlertAction!) in
+            //実際の処理
+            
+        })
+        // 表示させたいタイトル2ボタンが押された時の処理をクロージャ実装する
+        let action2 = UIAlertAction(title: "テンプレートから選ぶ", style: UIAlertAction.Style.default, handler: {
+            (action: UIAlertAction!) in
+            //実際の処理
+            
+            
+        })
+        
+        // 閉じるボタンが押された時の処理をクロージャ実装する
+        //UIAlertActionのスタイルがCancelなので赤く表示される
+        let close = UIAlertAction(title: "閉じる", style: UIAlertAction.Style.destructive, handler: {
+            (action: UIAlertAction!) in
+            //実際の処理
+            
+        })
+        
+        //UIAlertControllerにタイトル1ボタンとタイトル2ボタンと閉じるボタンをActionを追加
+        actionSheet.addAction(action1)
+        actionSheet.addAction(action2)
+        actionSheet.addAction(close)
+        
+        //実際にAlertを表示する
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
 }
 

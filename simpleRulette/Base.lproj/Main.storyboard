@@ -64,6 +64,9 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="データをセット"/>
+                                <connections>
+                                    <action selector="tappedAddDataButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r6K-w1-em7"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -91,7 +94,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="addDataButton" destination="XCH-0r-q9f" id="p31-gd-fkU"/>
                         <outlet property="bannerView" destination="CYS-1S-OkN" id="IvI-6k-p0l"/>
                         <outlet property="pieChartView" destination="fxP-Z6-xbD" id="mUA-Hg-Ra1"/>
                         <outlet property="resultLabel" destination="1Fr-dF-QSN" id="gob-TE-WoN"/>
