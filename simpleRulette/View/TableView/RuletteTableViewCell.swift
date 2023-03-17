@@ -9,6 +9,9 @@ import UIKit
 
 class RuletteTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var textView: UITextField!
+    @IBOutlet weak var colorView: UIView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
