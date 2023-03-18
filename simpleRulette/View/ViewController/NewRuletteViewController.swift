@@ -75,6 +75,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.textView.text = dataItems[indexPath.row]
         cell.colorView.layer.cornerRadius = cell.colorView.frame.height / 2
         cell.colorView.backgroundColor = dataColors[indexPath.row]
+        cell.delegate = self
         return cell
     }
     

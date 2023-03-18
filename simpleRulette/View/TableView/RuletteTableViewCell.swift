@@ -25,6 +25,7 @@ class RuletteTableViewCell: UITableViewCell, UITextViewDelegate, UITextFieldDele
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        textView.delegate = self
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -32,5 +33,14 @@ class RuletteTableViewCell: UITableViewCell, UITextViewDelegate, UITextFieldDele
             // デリゲートメソッドを呼び出す
             delegate?.textViewDidEndEditing(text: text, forCell: self)
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        if let text = textView.text {
+            // デリゲートメソッドを呼び出す
+            delegate?.textViewDidEndEditing(text: text, forCell: self)
+        }
+      return true
     }
 }
