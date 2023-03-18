@@ -17,5 +17,6 @@ target 'simpleRulette' do
   end
 
   pod 'Charts'
+  pod 'RealmSwift'
 
 end
