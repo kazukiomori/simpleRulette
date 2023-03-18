@@ -17,12 +17,14 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     var isSaved = false
     var titleString = ""
     @IBOutlet weak var templateSwitch: UISwitch!
+    let titleTextField = UITextField(frame: CGRect(x: 40, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2, height: 30))
     
     // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        titleTextField.delegate = self
         navigationItemSet()
         templateSwitch.isOn = false
     }
@@ -39,10 +41,9 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         addBarButtonItem.tintColor = .black
         self.navigationItem.rightBarButtonItems = [addBarButtonItem]
         
-        let textField = UITextField(frame: CGRect(x: 40, y: 0, width: (self.navigationController?.navigationBar.frame.width)! / 2, height: 30))
-        textField.placeholder = "未設定"
-        titleString = textField.text!
-        self.navigationItem.titleView = textField
+        titleTextField.placeholder = "未設定"
+        titleString = titleTextField.text!
+        self.navigationItem.titleView = titleTextField
     }
     
     @objc func addButtonTapped() {
@@ -54,6 +55,10 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
             //こっちのルートはおそらくいらない
         }
         //前の画面にルーレットの値の入ったモデルを渡す
+        if let previousViewController = navigationController?.viewControllers[0] as? RuletteViewController {
+            previousViewController.titleString = self.titleString
+            previousViewController.items = self.dataItems
+        }
         //前の画面に戻る
         self.navigationController?.popViewController(animated: false)
     }
@@ -96,6 +101,10 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == titleTextField {
+            titleString = titleTextField.text!
+            return
+        }
         if let text = textField.text {
             dataItems.append(text)
         }
@@ -106,5 +115,11 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         if let indexPath = tableView.indexPath(for: cell) {
             dataItems[indexPath.row] = text
         }
+    }
+    
+    // MARK: textFieldデリゲート
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

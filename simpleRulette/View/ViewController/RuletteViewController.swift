@@ -9,13 +9,18 @@ import UIKit
 import Charts
 
 class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
+    
+    // MARK: プロパティ
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
+    var titleString = "タイトル"
+    var items: [String] = []
 
+    // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(startRulette(_:)))
@@ -25,6 +30,12 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         setupPieChartView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        titleLabel.text = titleString
+    }
+    
+    // MARK: 関数
     func setupPieChartView() {
         self.pieChartView.centerText = "スタート"
 
