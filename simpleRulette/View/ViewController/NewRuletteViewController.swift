@@ -10,22 +10,56 @@ import UIKit
 
 class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    // MARK: プロパティ
     @IBOutlet weak var tableView: UITableView!
     var dataItems: [String] = []
     var dataColors: [UIColor] = []
+    var isSaved = false
+    @IBOutlet weak var templateSwitch: UISwitch!
+    
+    // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        navigationItemSet()
+        templateSwitch.isOn = false
     }
     
-    
+    // MARK: 関数
     @IBAction func tapAddData(_ sender: Any) {
         dataItems.append("未設定")
         dataColors.append(UIColor.rand)
         self.tableView.reloadData()
     }
     
+    func navigationItemSet() {
+        var addBarButtonItem = UIBarButtonItem(title: "保存", style: .done, target: self, action: #selector(addButtonTapped))
+        addBarButtonItem.tintColor = .black
+        self.navigationItem.rightBarButtonItems = [addBarButtonItem]
+    }
+    
+    @objc func addButtonTapped() {
+        if isSaved {
+            //テンプレートに保存する場合
+            //realmに保存
+        } else {
+            //テンプレートに保存しない場合
+            //こっちのルートはおそらくいらない
+        }
+        //前の画面にルーレットの値の入ったモデルを渡す
+        //前の画面に戻る
+        self.navigationController?.popViewController(animated: false)
+    }
+    
+    @IBAction func pushSwitch(_ sender: UISwitch) {
+        if sender.isOn {
+            self.isSaved = true
+        } else {
+            self.isSaved = false
+        }
+    }
+    // MARK: tableView関連
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataItems.count
     }

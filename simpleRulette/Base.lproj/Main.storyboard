@@ -193,6 +193,33 @@
                                     <action selector="tapAddData:" destination="iot-V8-4rJ" eventType="touchUpInside" id="REm-VB-tb7"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oF2-fy-JbF">
+                                <rect key="frame" x="0.0" y="648" width="393" height="50"/>
+                                <subviews>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iKN-TA-AeI">
+                                        <rect key="frame" x="324" y="10" width="51" height="30"/>
+                                        <connections>
+                                            <action selector="pushSwitch:" destination="iot-V8-4rJ" eventType="valueChanged" id="s47-j3-TNg"/>
+                                        </connections>
+                                    </switch>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="テンプレートとして保存する" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WXW-S4-AB4">
+                                        <rect key="frame" x="20" y="5" width="290" height="40"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGray2Color"/>
+                                <constraints>
+                                    <constraint firstItem="WXW-S4-AB4" firstAttribute="top" secondItem="oF2-fy-JbF" secondAttribute="top" constant="5" id="2xS-CT-DME"/>
+                                    <constraint firstAttribute="height" constant="50" id="40A-bY-kcz"/>
+                                    <constraint firstItem="iKN-TA-AeI" firstAttribute="top" secondItem="oF2-fy-JbF" secondAttribute="top" constant="10" id="5jz-V3-gdB"/>
+                                    <constraint firstItem="WXW-S4-AB4" firstAttribute="leading" secondItem="oF2-fy-JbF" secondAttribute="leading" constant="20" id="Cn4-sO-Ah8"/>
+                                    <constraint firstAttribute="bottom" secondItem="WXW-S4-AB4" secondAttribute="bottom" constant="5" id="YBi-ef-sAf"/>
+                                    <constraint firstAttribute="bottom" secondItem="iKN-TA-AeI" secondAttribute="bottom" constant="10" id="go7-dh-idj"/>
+                                    <constraint firstAttribute="trailing" secondItem="iKN-TA-AeI" secondAttribute="trailing" constant="20" id="woW-Fm-hCY"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="j2i-V8-uM3"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -201,12 +228,16 @@
                             <constraint firstItem="fFc-yK-nfm" firstAttribute="leading" secondItem="j2i-V8-uM3" secondAttribute="leading" id="8rz-I3-hhb"/>
                             <constraint firstItem="j2i-V8-uM3" firstAttribute="trailing" secondItem="fFc-yK-nfm" secondAttribute="trailing" id="Byg-wJ-ozj"/>
                             <constraint firstItem="fFc-yK-nfm" firstAttribute="top" secondItem="GVC-Bz-k0f" secondAttribute="bottom" id="R7Y-7e-sAH"/>
+                            <constraint firstItem="GVC-Bz-k0f" firstAttribute="top" secondItem="oF2-fy-JbF" secondAttribute="bottom" id="SOR-Xn-8iw"/>
+                            <constraint firstItem="oF2-fy-JbF" firstAttribute="leading" secondItem="j2i-V8-uM3" secondAttribute="leading" id="Z0r-Re-2U1"/>
                             <constraint firstItem="GVC-Bz-k0f" firstAttribute="leading" secondItem="j2i-V8-uM3" secondAttribute="leading" id="aT8-3e-4yj"/>
+                            <constraint firstItem="j2i-V8-uM3" firstAttribute="trailing" secondItem="oF2-fy-JbF" secondAttribute="trailing" id="n6I-6Y-cCq"/>
                             <constraint firstItem="j2i-V8-uM3" firstAttribute="bottom" secondItem="fFc-yK-nfm" secondAttribute="bottom" id="uVf-JL-7y1"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="rAW-vk-Dvm" id="Ib3-3B-Mpe"/>
+                        <outlet property="templateSwitch" destination="iKN-TA-AeI" id="U7D-ah-NLn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4gg-xy-Dpv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -221,6 +252,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray2Color">
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray5Color">
             <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
