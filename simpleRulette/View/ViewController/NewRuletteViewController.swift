@@ -8,13 +8,14 @@
 import Foundation
 import UIKit
 
-class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, RuletteTableViewCellDelegate {
     
     // MARK: プロパティ
     @IBOutlet weak var tableView: UITableView!
     var dataItems: [String] = []
     var dataColors: [UIColor] = []
     var isSaved = false
+    var titleString = ""
     @IBOutlet weak var templateSwitch: UISwitch!
     
     // MARK: ライフサイクル
@@ -37,6 +38,11 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         var addBarButtonItem = UIBarButtonItem(title: "保存", style: .done, target: self, action: #selector(addButtonTapped))
         addBarButtonItem.tintColor = .black
         self.navigationItem.rightBarButtonItems = [addBarButtonItem]
+        
+        let textField = UITextField(frame: CGRect(x: 40, y: 0, width: (self.navigationController?.navigationBar.frame.width)! / 2, height: 30))
+        textField.placeholder = "未設定"
+        titleString = textField.text!
+        self.navigationItem.titleView = textField
     }
     
     @objc func addButtonTapped() {
@@ -86,5 +92,18 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let text = textField.text {
+            dataItems.append(text)
+        }
+    }
+    
+    // MARK: RuletteTableViewCellデリゲート
+    func textViewDidEndEditing(text: String, forCell cell: RuletteTableViewCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            dataItems[indexPath.row] = text
+        }
     }
 }
