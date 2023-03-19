@@ -9,13 +9,22 @@ import UIKit
 import Charts
 
 class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
+    
+    // MARK: プロパティ
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
+    var titleString = "タイトル"
+    var items: [String] = []
+    
+    var dataEntries = [
+        PieChartDataEntry(value: 100, label: "")
+    ]
 
+    // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(startRulette(_:)))
@@ -25,19 +34,23 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         setupPieChartView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        titleLabel.text = titleString
+    }
+    
+    // MARK: 関数
     func setupPieChartView() {
         self.pieChartView.centerText = "スタート"
-
-        // 仮の値
-        let dataEntries = [
-            PieChartDataEntry(value: 40, label: "A"),
-            PieChartDataEntry(value: 35, label: "B"),
-            PieChartDataEntry(value: 25, label: "C")
-        ]
-        
         let dataSet = PieChartDataSet(entries: dataEntries, label: "")
-        // 色を設定
-        dataSet.colors = ChartColorTemplates.material()
+        // 円グラフ内に数値を表示しない
+        dataSet.drawValuesEnabled = false
+        if dataSet.entries.count == 1 {
+            dataSet.colors = [NSUIColor.gray]
+        } else {
+            // 色を設定
+            dataSet.colors = ChartColorTemplates.material()
+        }
         // グラフ上のデータラベルを非表示
         pieChartView.drawEntryLabelsEnabled = false
         // グラフの注釈を非表示
