@@ -18,7 +18,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
     var titleString = "タイトル"
-    var items: [String] = []
+    var items: [String] = [""]
     
     var dataEntries = [
         PieChartDataEntry(value: 100, label: "")
@@ -31,20 +31,26 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         pieChartView.addGestureRecognizer(tapGesture)
         tapGesture.delegate = self
         triangleImage.tintColor = .black
-        setupPieChartView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         titleLabel.text = titleString
+        setupPieChartView()
     }
     
     // MARK: 関数
     func setupPieChartView() {
         self.pieChartView.centerText = "スタート"
+        dataEntries = []
+        for item in items {
+            let dataEntry = PieChartDataEntry(value: Double(100 / items.count), label: item)
+            dataEntries.append(dataEntry)
+        }
         let dataSet = PieChartDataSet(entries: dataEntries, label: "")
         // 円グラフ内に数値を表示しない
         dataSet.drawValuesEnabled = false
+//        dataSet.drawValuesEnabled = false
         if dataSet.entries.count == 1 {
             dataSet.colors = [NSUIColor.gray]
         } else {
@@ -52,7 +58,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             dataSet.colors = ChartColorTemplates.material()
         }
         // グラフ上のデータラベルを非表示
-        pieChartView.drawEntryLabelsEnabled = false
+        pieChartView.drawEntryLabelsEnabled = true
         // グラフの注釈を非表示
         pieChartView.legend.enabled = false
         let rouletteChartData = PieChartData(dataSet: dataSet)
@@ -94,27 +100,16 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                     testAngle = 360 - testAngle
                 }
                 
-                // 矢印の位置
-                print("final: (testAngle)º")
-                
                 // 360° = 100% とした時の割合
                 let per = Int((testAngle) / 3.60)
-                print("per: (per)")
                 
-                // 40:35:25 のグラフであれば、
-                // 0..<40 -> A
-                // 40..<75 -> B
-                // 75...100 -> C
-                // 一般化するにはもう一工夫必要
-                if per < 40 {
-                    resultLabel.text = "A"
-                    print("A")
-                } else if per < 40 + 35 {
-                    resultLabel.text = "B"
-                    print("B")
-                } else {
-                    resultLabel.text = "C"
-                    print("C")
+                var itemValue = 0
+                for item in items {
+                    itemValue += 100 / items.count
+                    if per < itemValue {
+                        resultLabel.text = "\(item)"
+                        return
+                    }
                 }
             }
         }
