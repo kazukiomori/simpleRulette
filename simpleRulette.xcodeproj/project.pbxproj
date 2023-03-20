@@ -14,6 +14,8 @@
 		3B5044C429C3F6E8004B4425 /* Rulette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044C329C3F6E8004B4425 /* Rulette.swift */; };
 		3B5044C729C4E305004B4425 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044C629C4E305004B4425 /* UIColorExtension.swift */; };
 		3B5044CF29C83DA2004B4425 /* messageAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044CE29C83DA1004B4425 /* messageAlert.swift */; };
+		3B5044D229C8989E004B4425 /* RuletteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D129C8989E004B4425 /* RuletteModel.swift */; };
+		3B5044D529C899B8004B4425 /* RuletteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D429C899B8004B4425 /* RuletteViewModel.swift */; };
 		3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7229C153CC00158D35 /* AppDelegate.swift */; };
 		3BC38F7529C153CC00158D35 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7429C153CC00158D35 /* SceneDelegate.swift */; };
 		3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7629C153CC00158D35 /* RuletteViewController.swift */; };
@@ -52,6 +54,8 @@
 		3B5044C329C3F6E8004B4425 /* Rulette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rulette.swift; sourceTree = "<group>"; };
 		3B5044C629C4E305004B4425 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		3B5044CE29C83DA1004B4425 /* messageAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = messageAlert.swift; sourceTree = "<group>"; };
+		3B5044D129C8989E004B4425 /* RuletteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteModel.swift; sourceTree = "<group>"; };
+		3B5044D429C899B8004B4425 /* RuletteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteViewModel.swift; sourceTree = "<group>"; };
 		3BC38F6F29C153CC00158D35 /* simpleRulette.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleRulette.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC38F7229C153CC00158D35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BC38F7429C153CC00158D35 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -143,7 +147,7 @@
 		3B5044C229C3F6CF004B4425 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3B5044C329C3F6E8004B4425 /* Rulette.swift */,
+				3B5044D129C8989E004B4425 /* RuletteModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -173,6 +177,22 @@
 			path = Alert;
 			sourceTree = "<group>";
 		};
+		3B5044D029C89879004B4425 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				3B5044C329C3F6E8004B4425 /* Rulette.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		3B5044D329C8999A004B4425 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				3B5044D429C899B8004B4425 /* RuletteViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		3BC38F6629C153CC00158D35 = {
 			isa = PBXGroup;
 			children = (
@@ -198,6 +218,8 @@
 		3BC38F7129C153CC00158D35 /* simpleRulette */ = {
 			isa = PBXGroup;
 			children = (
+				3B5044D329C8999A004B4425 /* ViewModel */,
+				3B5044D029C89879004B4425 /* Common */,
 				3B5044C529C4E2D2004B4425 /* Util */,
 				3B5044C229C3F6CF004B4425 /* Model */,
 				3B5044B929C37F9B004B4425 /* View */,
@@ -483,8 +505,10 @@
 				3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */,
 				3B5044BD29C38034004B4425 /* NewRuletteViewController.swift in Sources */,
 				3B5044C429C3F6E8004B4425 /* Rulette.swift in Sources */,
+				3B5044D529C899B8004B4425 /* RuletteViewModel.swift in Sources */,
 				3B5044C729C4E305004B4425 /* UIColorExtension.swift in Sources */,
 				3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */,
+				3B5044D229C8989E004B4425 /* RuletteModel.swift in Sources */,
 				3B5044C129C3F171004B4425 /* RuletteTableViewCell.swift in Sources */,
 				3B5044CF29C83DA2004B4425 /* messageAlert.swift in Sources */,
 				3B5044BB29C37FD0004B4425 /* TemplateViewController.swift in Sources */,

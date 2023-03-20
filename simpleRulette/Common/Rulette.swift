@@ -10,10 +10,12 @@ import UIKit
 import RealmSwift
 
 @objcMembers
+
 class Rulette: Object {
-    @objc dynamic var menu: String = ""
-    @objc dynamic var calorie: Int = 0
-    @objc dynamic var memo: String = ""
-    
+    @objc dynamic var title: String = ""
+    var ruletteItems = List<ruletteItem>()
 }
 
+class ruletteItem: Object {
+    @objc dynamic var item: String = ""
+}
