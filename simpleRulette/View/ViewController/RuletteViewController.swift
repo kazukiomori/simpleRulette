@@ -107,7 +107,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 for item in items {
                     itemValue += 100 / items.count
                     if per < itemValue {
-                        resultLabel.text = "\(item)"
+                        resultLabel.text = "結果は\(item)です"
                         return
                     }
                 }

@@ -21,6 +21,7 @@ class RuletteTableViewCell: UITableViewCell, UITextViewDelegate, UITextFieldDele
     override func awakeFromNib() {
         super.awakeFromNib()
         textView.delegate = self
+        textView.placeholder = "未設定"
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

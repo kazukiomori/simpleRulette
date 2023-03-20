@@ -77,7 +77,6 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ruletteTableViewCell", for: indexPath) as? RuletteTableViewCell else {return UITableViewCell()}
-        cell.textView.text = dataItems[indexPath.row]
         cell.colorView.layer.cornerRadius = cell.colorView.frame.height / 2
         cell.colorView.backgroundColor = dataColors[indexPath.row]
         cell.delegate = self
