@@ -17,7 +17,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     var isSaved = false
     var titleString = ""
     @IBOutlet weak var templateSwitch: UISwitch!
-    let titleTextField = UITextField(frame: CGRect(x: 40, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2, height: 30))
+    let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2 + 40, height: 30))
     
     // MARK: ライフサイクル
     override func viewDidLoad() {
@@ -51,6 +51,22 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
             messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットのタイトルが入力されていません")
             return
         }
+        
+        if dataItems.count == 0 {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を追加してください")
+            return
+        }
+        
+        if dataItems.count == 1 {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目が1つしかありません")
+            return
+        }
+        
+        if dataItems.contains("") {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を正しく入力してください")
+            return
+        }
+        
         if isSaved {
             //テンプレートに保存する場合
             //realmに保存

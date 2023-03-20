@@ -36,6 +36,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         titleLabel.text = titleString
+        resultLabel.text = ""
         setupPieChartView()
     }
     
