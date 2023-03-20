@@ -242,7 +242,48 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4gg-xy-Dpv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1215" y="-50"/>
+            <point key="canvasLocation" x="1051" y="-50"/>
+        </scene>
+        <!--Template View Controller-->
+        <scene sceneID="BZH-aw-irF">
+            <objects>
+                <viewController id="Phz-Dd-I7v" customClass="TemplateViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oqX-Kc-fbr">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P6I-MX-iuU">
+                                <rect key="frame" x="0.0" y="748" width="393" height="70"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="NmB-vv-sul"/>
+                                </constraints>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="QFw-qT-g3k">
+                                <rect key="frame" x="0.0" y="59" width="393" height="689"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="JRG-Oq-0RB"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="P6I-MX-iuU" firstAttribute="bottom" secondItem="JRG-Oq-0RB" secondAttribute="bottom" id="7hJ-5W-UgG"/>
+                            <constraint firstItem="JRG-Oq-0RB" firstAttribute="trailing" secondItem="QFw-qT-g3k" secondAttribute="trailing" id="Bbw-YR-ylA"/>
+                            <constraint firstItem="P6I-MX-iuU" firstAttribute="top" secondItem="QFw-qT-g3k" secondAttribute="bottom" id="Jaf-da-nJg"/>
+                            <constraint firstItem="P6I-MX-iuU" firstAttribute="leading" secondItem="JRG-Oq-0RB" secondAttribute="leading" id="NHL-U7-AXA"/>
+                            <constraint firstItem="QFw-qT-g3k" firstAttribute="top" secondItem="JRG-Oq-0RB" secondAttribute="top" id="kEY-q2-o0N"/>
+                            <constraint firstItem="JRG-Oq-0RB" firstAttribute="trailing" secondItem="P6I-MX-iuU" secondAttribute="trailing" id="tsb-hv-xJp"/>
+                            <constraint firstItem="QFw-qT-g3k" firstAttribute="leading" secondItem="JRG-Oq-0RB" secondAttribute="leading" id="uMF-Eg-0Jm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bannerView" destination="P6I-MX-iuU" id="apT-JO-lTi"/>
+                        <outlet property="tableView" destination="QFw-qT-g3k" id="gQf-YW-Xf4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YBR-aE-khN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2146" y="-50"/>
         </scene>
     </scenes>
     <resources>
