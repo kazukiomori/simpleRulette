@@ -17,7 +17,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     var isSaved = false
     var titleString = ""
     @IBOutlet weak var templateSwitch: UISwitch!
-    let titleTextField = UITextField(frame: CGRect(x: 40, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2, height: 30))
+    let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2 + 40, height: 30))
     
     // MARK: ライフサイクル
     override func viewDidLoad() {
@@ -47,6 +47,26 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func addButtonTapped() {
+        if titleTextField.text == "" {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットのタイトルが入力されていません")
+            return
+        }
+        
+        if dataItems.count == 0 {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を追加してください")
+            return
+        }
+        
+        if dataItems.count == 1 {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目が1つしかありません")
+            return
+        }
+        
+        if dataItems.contains("") {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を正しく入力してください")
+            return
+        }
+        
         if isSaved {
             //テンプレートに保存する場合
             //realmに保存
@@ -77,7 +97,6 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ruletteTableViewCell", for: indexPath) as? RuletteTableViewCell else {return UITableViewCell()}
-        cell.textView.text = dataItems[indexPath.row]
         cell.colorView.layer.cornerRadius = cell.colorView.frame.height / 2
         cell.colorView.backgroundColor = dataColors[indexPath.row]
         cell.delegate = self
