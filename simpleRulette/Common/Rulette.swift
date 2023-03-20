@@ -13,7 +13,7 @@ import RealmSwift
 
 class Rulette: Object {
     @objc dynamic var title: String = ""
-    let ruletteItems = List<ruletteItem>()
+    var ruletteItems = List<ruletteItem>()
 }
 
 class ruletteItem: Object {

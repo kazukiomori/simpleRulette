@@ -19,7 +19,7 @@ class RuletteModel {
     }
     
     // realmからデータを取得
-    func getAllWeightData() -> Results<Rulette> {
+    func getAllRuletteData() -> Results<Rulette> {
         let realm = try! Realm()
         var results: Results<Rulette>
         results = realm.objects(Rulette.self)
