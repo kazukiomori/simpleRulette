@@ -47,6 +47,10 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func addButtonTapped() {
+        if titleTextField.text == "" {
+            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットのタイトルが入力されていません")
+            return
+        }
         if isSaved {
             //テンプレートに保存する場合
             //realmに保存
