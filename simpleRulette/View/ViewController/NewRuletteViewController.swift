@@ -70,6 +70,8 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         if isSaved {
             //テンプレートに保存する場合
             //realmに保存
+            let ruletteViewModel = RuletteViewModel()
+            ruletteViewModel.addData(title: titleTextField.text!, items: dataItems)
         } else {
             //テンプレートに保存しない場合
             //こっちのルートはおそらくいらない
