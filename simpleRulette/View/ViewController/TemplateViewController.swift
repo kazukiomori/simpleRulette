@@ -56,4 +56,16 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
             return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let previousViewController = navigationController?.viewControllers[0] as? RuletteViewController {
+            previousViewController.titleString = ruletteList[indexPath.row].title
+            var items: [String] = []
+            for item in ruletteList[indexPath.row].ruletteItems {
+                items.append(item.item)
+            }
+            previousViewController.items = items
+        }
+        //前の画面に戻る
+        self.navigationController?.popViewController(animated: false)
+    }
 }
