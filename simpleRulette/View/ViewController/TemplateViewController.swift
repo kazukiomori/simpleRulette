@@ -10,21 +10,25 @@ import UIKit
 
 class TemplateViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    // MARK: プロパティ
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var bannerView: UIView!
     
+    // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
     }
     
+    // MARK: tableView関連
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? UITableViewCell else {return UITableViewCell()}
+        return cell
     }
     
 }

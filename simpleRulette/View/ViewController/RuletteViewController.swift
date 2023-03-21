@@ -124,8 +124,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             (action: UIAlertAction!) in
             //実際の処理
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-            guard let nextViewController = storyBoard.instantiateViewController(withIdentifier: "NewRuletteViewController") as? NewRuletteViewController else { return }
-            self.navigationController?.show(nextViewController, sender: nil)
+            guard let newViewController = storyBoard.instantiateViewController(withIdentifier: "NewRuletteViewController") as? NewRuletteViewController else { return }
+            self.navigationController?.show(newViewController, sender: nil)
         })
         // 表示させたいタイトル2ボタンが押された時の処理をクロージャ実装する
         let action2 = UIAlertAction(title: "テンプレートから選ぶ", style: UIAlertAction.Style.default, handler: {

@@ -244,10 +244,10 @@
             </objects>
             <point key="canvasLocation" x="1051" y="-50"/>
         </scene>
-        <!--Template View Controller-->
+        <!--TemplateViewController-->
         <scene sceneID="BZH-aw-irF">
             <objects>
-                <viewController id="Phz-Dd-I7v" customClass="TemplateViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="TemplateViewController" storyboardIdentifier="TemplateViewController" title="TemplateViewController" id="Phz-Dd-I7v" customClass="TemplateViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oqX-Kc-fbr">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -262,6 +262,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="QFw-qT-g3k">
                                 <rect key="frame" x="0.0" y="59" width="393" height="689"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="Nao-qg-Ysj">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Nao-qg-Ysj" id="Flb-Wc-513">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="JRG-Oq-0RB"/>
