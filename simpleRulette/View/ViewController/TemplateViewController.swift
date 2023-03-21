@@ -21,6 +21,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        self.navigationItem.title = "テンプレート"
     }
     
     override func viewWillAppear(_ animated: Bool) {
