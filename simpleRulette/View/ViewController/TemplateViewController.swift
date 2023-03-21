@@ -43,4 +43,16 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
         return 50
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "削除") { (action, view, completionHandler) in
+            self.ruletteViewModel.deleteRuletteData(rulette: self.ruletteList[indexPath.item])
+            self.ruletteList.remove(at: indexPath.row)
+            tableView.reloadData()
+              // 実行結果に関わらず記述
+              completionHandler(true)
+            }
+            // 定義したアクションをセット
+            return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
 }

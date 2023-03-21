@@ -12,7 +12,7 @@ class RuletteViewModel {
     
     let model = RuletteModel()
     
-    // viewで入力した値をWeight型の変数にまとめて、WeightModelでrealmに保存する
+    // viewで入力した値をWeight型の変数にまとめて、RuletteModelでrealmに保存する
     func addData(title: String, items: [String]){
         let rulette = Rulette()
         let ruletteItem = ruletteItem()
@@ -24,7 +24,7 @@ class RuletteViewModel {
         model.addData(rulette: rulette)
     }
     
-    // WeightModelでrealmから取り出したデータをWeight型の配列にしてviewに渡す
+    // RuletteModelでrealmから取り出したデータをRulette型の配列にしてviewに渡す
     func fetchAllData() -> [Rulette] {
         var ruletteList: [Rulette] = []
         let results = model.getAllRuletteData()
@@ -35,5 +35,9 @@ class RuletteViewModel {
             ruletteList.append(rulette)
         }
         return ruletteList
+    }
+    
+    func deleteRuletteData(rulette: Rulette) {
+        model.deleteData(rulette: rulette)
     }
 }
