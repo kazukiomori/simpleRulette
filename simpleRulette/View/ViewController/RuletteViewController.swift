@@ -105,12 +105,14 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 let per = Int((testAngle) / 3.60)
                 
                 var itemValue = 0
+                var count = 0
                 for item in items {
                     itemValue += 100 / items.count
-                    if per < itemValue {
+                    if per < itemValue || count == items.count {
                         resultLabel.text = "結果は\(item)です"
                         return
                     }
+                    count += 1
                 }
             }
         }

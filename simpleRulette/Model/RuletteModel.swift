@@ -14,7 +14,7 @@ class RuletteModel {
     func addData(rulette: Rulette) {
         let realm = try! Realm()
         try! realm.write{
-            realm.add(rulette, update: .modified)
+            realm.add(rulette)
         }
     }
     
