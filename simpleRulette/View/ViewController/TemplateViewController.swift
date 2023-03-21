@@ -34,7 +34,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? UITableViewCell else {return UITableViewCell()}
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TemplateRuletteTableViewCell", for: indexPath) as? TemplateRuletteTableViewCell else {return UITableViewCell()}
         return cell
     }
     
