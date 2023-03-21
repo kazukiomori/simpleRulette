@@ -35,6 +35,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TemplateRuletteTableViewCell", for: indexPath) as? TemplateRuletteTableViewCell else {return UITableViewCell()}
+        cell.titleLabel.text = ruletteList[indexPath.row].title
         return cell
     }
     
