@@ -17,6 +17,7 @@
 		3B5044D229C8989E004B4425 /* RuletteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D129C8989E004B4425 /* RuletteModel.swift */; };
 		3B5044D529C899B8004B4425 /* RuletteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D429C899B8004B4425 /* RuletteViewModel.swift */; };
 		3B5044D729C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D629C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift */; };
+		3B9410C029CB3FAB006753E0 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9410BF29CB3FAB006753E0 /* Sound.swift */; };
 		3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7229C153CC00158D35 /* AppDelegate.swift */; };
 		3BC38F7529C153CC00158D35 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7429C153CC00158D35 /* SceneDelegate.swift */; };
 		3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7629C153CC00158D35 /* RuletteViewController.swift */; };
@@ -58,6 +59,7 @@
 		3B5044D129C8989E004B4425 /* RuletteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteModel.swift; sourceTree = "<group>"; };
 		3B5044D429C899B8004B4425 /* RuletteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteViewModel.swift; sourceTree = "<group>"; };
 		3B5044D629C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateRuletteTableViewCell.swift; sourceTree = "<group>"; };
+		3B9410BF29CB3FAB006753E0 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
 		3BC38F6F29C153CC00158D35 /* simpleRulette.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleRulette.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC38F7229C153CC00158D35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BC38F7429C153CC00158D35 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 			children = (
 				3B5044C929C832A2004B4425 /* Alert */,
 				3B5044C829C8328C004B4425 /* Extension */,
+				3B9410BF29CB3FAB006753E0 /* Sound.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -505,6 +508,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B9410C029CB3FAB006753E0 /* Sound.swift in Sources */,
 				3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */,
 				3B5044BD29C38034004B4425 /* NewRuletteViewController.swift in Sources */,
 				3B5044C429C3F6E8004B4425 /* Rulette.swift in Sources */,
