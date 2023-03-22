@@ -23,7 +23,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     var dataEntries = [
         PieChartDataEntry(value: 100, label: "")
     ]
-
+    let drum = Sound(fileNamed: "drum.wav",volume:0.5,numberOfLoops:-1)
+    let roll = Sound(fileNamed: "roll.wav")
     // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +76,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         animation.fillMode = CAMediaTimingFillMode.forwards
         
         if buttonStartFlg {
+            drum.play()
             self.pieChartView.centerText = "ストップ"
             pieChartView.layer.speed = 2.0
             animation.toValue = .pi / 2.0
@@ -85,6 +87,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             buttonStartFlg = false
             resultLabel.text = ""
         } else {
+            drum.stop()
+            roll.play()
             self.pieChartView.centerText = "スタート"
             let pausedTime = pieChartView.layer.convertTime(CACurrentMediaTime(), from: nil)
             pieChartView.layer.speed = 0.0
