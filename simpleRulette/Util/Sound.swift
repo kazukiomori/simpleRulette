@@ -8,19 +8,19 @@
 
 import AVFoundation
 
-class Sound{
+class Sound {
 
     //playerを作成
     var player: AVAudioPlayer!
 
     init(fileNamed:String,volume:Float,numberOfLoops:Int){
-        let fileNameStrings = fileNamed.componentsSeparatedByString(".")
+        let fileNameStrings = fileNamed.components(separatedBy: ".")
         let fileName = fileNameStrings[0]
         let fileType = fileNameStrings[1]
-        let url = NSBundle.mainBundle().URLForResource(fileName, withExtension: fileType)
+        let url = Bundle.main.url(forResource: fileName, withExtension: fileType)
         if let url = url {
             do {
-                player = try AVAudioPlayer(contentsOfURL: url)
+                player = try AVAudioPlayer(contentsOf: url)
                 player.numberOfLoops = numberOfLoops/* 0なら一回、自然数ならその数だけループ、負の数なら永久ループ */
                 player.prepareToPlay()     //再生準備 (タイミングがシビアな時のみ)
                 player.volume = volume
