@@ -67,6 +67,9 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func startRulette(_ sender : UITapGestureRecognizer) {
+        if items.count == 1 {
+            return
+        }
         let animation = CABasicAnimation(keyPath: "transform.rotation")
         animation.isRemovedOnCompletion = false
         animation.fillMode = CAMediaTimingFillMode.forwards
@@ -105,12 +108,14 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 let per = Int((testAngle) / 3.60)
                 
                 var itemValue = 0
+                var count = 0
                 for item in items {
                     itemValue += 100 / items.count
-                    if per < itemValue {
+                    if per < itemValue || count == items.count {
                         resultLabel.text = "結果は\(item)です"
                         return
                     }
+                    count += 1
                 }
             }
         }
@@ -124,8 +129,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             (action: UIAlertAction!) in
             //実際の処理
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-            guard let nextViewController = storyBoard.instantiateViewController(withIdentifier: "NewRuletteViewController") as? NewRuletteViewController else { return }
-            self.navigationController?.show(nextViewController, sender: nil)
+            guard let newViewController = storyBoard.instantiateViewController(withIdentifier: "NewRuletteViewController") as? NewRuletteViewController else { return }
+            self.navigationController?.show(newViewController, sender: nil)
         })
         // 表示させたいタイトル2ボタンが押された時の処理をクロージャ実装する
         let action2 = UIAlertAction(title: "テンプレートから選ぶ", style: UIAlertAction.Style.default, handler: {

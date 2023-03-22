@@ -244,10 +244,10 @@
             </objects>
             <point key="canvasLocation" x="1051" y="-50"/>
         </scene>
-        <!--Template View Controller-->
+        <!--TemplateViewController-->
         <scene sceneID="BZH-aw-irF">
             <objects>
-                <viewController id="Phz-Dd-I7v" customClass="TemplateViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="TemplateViewController" storyboardIdentifier="TemplateViewController" title="TemplateViewController" id="Phz-Dd-I7v" customClass="TemplateViewController" customModule="simpleRulette" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oqX-Kc-fbr">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -262,6 +262,35 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="QFw-qT-g3k">
                                 <rect key="frame" x="0.0" y="59" width="393" height="689"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TemplateRuletteTableViewCell" id="Nao-qg-Ysj" customClass="TemplateRuletteTableViewCell" customModule="simpleRulette" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="72.333335876464844"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Nao-qg-Ysj" id="Flb-Wc-513">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="72.333335876464844"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bL6-rz-8eL">
+                                                    <rect key="frame" x="35" y="11.000000000000004" width="71" height="50.333333333333343"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="50" id="EpK-Hr-MvJ"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="bL6-rz-8eL" secondAttribute="bottom" id="J35-bW-T9Z"/>
+                                                <constraint firstItem="bL6-rz-8eL" firstAttribute="leading" secondItem="Flb-Wc-513" secondAttribute="leadingMargin" constant="15" id="Qsy-KA-jDz"/>
+                                                <constraint firstItem="bL6-rz-8eL" firstAttribute="top" secondItem="Flb-Wc-513" secondAttribute="topMargin" id="fst-59-Gkn"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="titleLabel" destination="bL6-rz-8eL" id="0fB-AR-9Sv"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="JRG-Oq-0RB"/>
