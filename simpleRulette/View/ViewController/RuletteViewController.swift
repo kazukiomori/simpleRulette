@@ -67,6 +67,9 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func startRulette(_ sender : UITapGestureRecognizer) {
+        if items.count == 1 {
+            return
+        }
         let animation = CABasicAnimation(keyPath: "transform.rotation")
         animation.isRemovedOnCompletion = false
         animation.fillMode = CAMediaTimingFillMode.forwards

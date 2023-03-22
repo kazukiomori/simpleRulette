@@ -57,6 +57,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
         if let previousViewController = navigationController?.viewControllers[0] as? RuletteViewController {
             previousViewController.titleString = ruletteList[indexPath.row].title
             var items: [String] = []
