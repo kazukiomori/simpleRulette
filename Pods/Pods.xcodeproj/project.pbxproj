@@ -231,7 +231,7 @@
 		6C4C53377507F9D77E67A19F3B0DAE69 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841215CDE5826F7E947D6F015486BBBF /* Identifiable.swift */; };
 		6C8E210026D35C77C8D2064E5940B8F8 /* RLMCredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 954E161EA6828D9E14E94CF6F76C12F6 /* RLMCredentials.h */; };
 		6D878FE6964089A7F47EB406F566ECC0 /* ScatterChartDataSetProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BB19DC581D276A5624ED358A494E16 /* ScatterChartDataSetProtocol.swift */; };
-		6E5BC0F0DF1D4D4C3A81A3B1ABEB2E52 /* SwiftMessages-SwiftMessages in Resources */ = {isa = PBXBuildFile; fileRef = 753DD909979478A0C1B33E0524504EF1 /* SwiftMessages-SwiftMessages */; };
+		6E5BC0F0DF1D4D4C3A81A3B1ABEB2E52 /* SwiftMessages.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 753DD909979478A0C1B33E0524504EF1 /* SwiftMessages.bundle */; };
 		6F678F5EE5D656920EA9C84051B01F11 /* RLMSyncUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B20FA7558CDDE28FD34554DB976CE8DE /* RLMSyncUtil.mm */; settings = {COMPILER_FLAGS = "-DREALM_HAVE_CONFIG -DREALM_COCOA_VERSION='@\"10.36.0\"' -D__ASSERTMACROS__ -DREALM_ENABLE_SYNC"; }; };
 		6FB80F5288BD4C8E9CB1235ADAD75075 /* RLMResults.h in Copy . Public Headers */ = {isa = PBXBuildFile; fileRef = DE3C979E8BEF2E9599EE16243841BAFA /* RLMResults.h */; };
 		6FC16F5639926D99A63C51C6AB855C2D /* PropertyAccessors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77787AF68D74E00D3E7816059CAA888A /* PropertyAccessors.swift */; };
@@ -956,7 +956,7 @@
 		741F72404BA7EA40B4C6E9799128D632 /* RealmKeyedCollection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RealmKeyedCollection.swift; path = RealmSwift/RealmKeyedCollection.swift; sourceTree = "<group>"; };
 		743C64F62BA1DF1943FC4D93DE753CE9 /* YAxisRendererHorizontalBarChart.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = YAxisRendererHorizontalBarChart.swift; path = Source/Charts/Renderers/YAxisRendererHorizontalBarChart.swift; sourceTree = "<group>"; };
 		74C642CA23C6B91DD9A7DE064E23CE4B /* ViewPortJob.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ViewPortJob.swift; path = Source/Charts/Jobs/ViewPortJob.swift; sourceTree = "<group>"; };
-		753DD909979478A0C1B33E0524504EF1 /* SwiftMessages-SwiftMessages */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "SwiftMessages-SwiftMessages"; path = SwiftMessages.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		753DD909979478A0C1B33E0524504EF1 /* SwiftMessages.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMessages.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		75952B2796BA6F92EDA027350D483449 /* RLMPredicateUtil.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = RLMPredicateUtil.mm; path = Realm/RLMPredicateUtil.mm; sourceTree = "<group>"; };
 		76681BC86917ECB5051538C4F6BC016D /* BarChartRenderer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BarChartRenderer.swift; path = Source/Charts/Renderers/BarChartRenderer.swift; sourceTree = "<group>"; };
 		76B233DF18ABF042AF43F69383567B7B /* RealmSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RealmSwift-dummy.m"; sourceTree = "<group>"; };
@@ -1982,7 +1982,7 @@
 				437919EE08EC6BFCCBAC3BD346309742 /* RealmSwift */,
 				F3E7458F7D38C89A9DE4BBACD3450C88 /* SwiftAlgorithms */,
 				4824F23D80FF9070A5F8A452DB11EB9A /* SwiftMessages */,
-				753DD909979478A0C1B33E0524504EF1 /* SwiftMessages-SwiftMessages */,
+				753DD909979478A0C1B33E0524504EF1 /* SwiftMessages.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2252,7 +2252,7 @@
 			);
 			name = "SwiftMessages-SwiftMessages";
 			productName = SwiftMessages;
-			productReference = 753DD909979478A0C1B33E0524504EF1 /* SwiftMessages-SwiftMessages */;
+			productReference = 753DD909979478A0C1B33E0524504EF1 /* SwiftMessages.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 		BF03B0B2B8B052092CB5F90CC5FB3757 /* Charts */ = {
@@ -2356,7 +2356,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E5BC0F0DF1D4D4C3A81A3B1ABEB2E52 /* SwiftMessages-SwiftMessages in Resources */,
+				6E5BC0F0DF1D4D4C3A81A3B1ABEB2E52 /* SwiftMessages.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3148,6 +3148,7 @@
 			baseConfigurationReference = 71C35CEFD728C4F47CEA8A2C9AE2A2BF /* SwiftMessages.release.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/SwiftMessages";
+				DEVELOPMENT_TEAM = 596D95CQ24;
 				IBSC_MODULE = SwiftMessages;
 				INFOPLIST_FILE = "Target Support Files/SwiftMessages/ResourceBundle-SwiftMessages-SwiftMessages-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -3440,6 +3441,7 @@
 			baseConfigurationReference = 4508CD5DCDDD6565309C24AB02E7C078 /* SwiftMessages.debug.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/SwiftMessages";
+				DEVELOPMENT_TEAM = 596D95CQ24;
 				IBSC_MODULE = SwiftMessages;
 				INFOPLIST_FILE = "Target Support Files/SwiftMessages/ResourceBundle-SwiftMessages-SwiftMessages-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
