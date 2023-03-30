@@ -31,7 +31,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // MARK: 関数
     @IBAction func tapAddData(_ sender: Any) {
-        dataItems.append("未設定")
+        dataItems.append("")
         dataColors.append(UIColor.rand)
         self.tableView.reloadData()
     }
@@ -102,6 +102,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.colorView.layer.cornerRadius = cell.colorView.frame.height / 2
         cell.colorView.backgroundColor = dataColors[indexPath.row]
         cell.delegate = self
+        cell.textView.text = dataItems[indexPath.row]
         return cell
     }
     
