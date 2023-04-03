@@ -32,12 +32,18 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         pieChartView.addGestureRecognizer(tapGesture)
         tapGesture.delegate = self
         triangleImage.tintColor = .black
+        resultLabel.adjustsFontSizeToFitWidth = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         titleLabel.text = titleString
-        resultLabel.text = ""
+        if items.count == 1 {
+            resultLabel.text = "データをセットしてください"
+        } else {
+            resultLabel.text = "ルーレットをタップしてスタート"
+        }
+        
         setupPieChartView()
     }
     
@@ -85,7 +91,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             animation.isCumulative = true
             pieChartView.layer.add(animation, forKey: "ImageViewRotation")
             buttonStartFlg = false
-            resultLabel.text = ""
+            resultLabel.text = "ルーレットをタップしてストップ"
         } else {
             drum.stop()
             roll.play()
