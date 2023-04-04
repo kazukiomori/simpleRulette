@@ -19,4 +19,5 @@ target 'simpleRulette' do
   pod 'Charts'
   pod 'RealmSwift'
   pod 'SwiftMessages'
+  pod 'Google-Mobile-Ads-SDK'
 end
