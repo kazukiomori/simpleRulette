@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		197AF950FB17545A07197A4E /* Pods_simpleRulette_simpleRuletteUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4130E611CA83B154A546A8AC /* Pods_simpleRulette_simpleRuletteUITests.framework */; };
+		3B3748E229E44B180011535B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3B3748E429E44B180011535B /* Localizable.strings */; };
 		3B5044BB29C37FD0004B4425 /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044BA29C37FD0004B4425 /* TemplateViewController.swift */; };
 		3B5044BD29C38034004B4425 /* NewRuletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044BC29C38034004B4425 /* NewRuletteViewController.swift */; };
 		3B5044C129C3F171004B4425 /* RuletteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044C029C3F171004B4425 /* RuletteTableViewCell.swift */; };
@@ -52,6 +53,10 @@
 
 /* Begin PBXFileReference section */
 		189F7A32B90D1A6D8B3A6B2E /* Pods_simpleRulette.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_simpleRulette.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B3748DE29E44AB30011535B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		3B3748DF29E44AB30011535B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		3B3748E329E44B180011535B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3B3748E529E44B1C0011535B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3B5044BA29C37FD0004B4425 /* TemplateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
 		3B5044BC29C38034004B4425 /* NewRuletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRuletteViewController.swift; sourceTree = "<group>"; };
 		3B5044C029C3F171004B4425 /* RuletteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteTableViewCell.swift; sourceTree = "<group>"; };
@@ -249,6 +254,7 @@
 				3BC38F7B29C153CF00158D35 /* Assets.xcassets */,
 				3BC38F7D29C153CF00158D35 /* LaunchScreen.storyboard */,
 				3BC38F8029C153CF00158D35 /* Info.plist */,
+				3B3748E429E44B180011535B /* Localizable.strings */,
 			);
 			path = simpleRulette;
 			sourceTree = "<group>";
@@ -374,6 +380,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 3BC38F6629C153CC00158D35;
 			productRefGroup = 3BC38F7029C153CC00158D35 /* Products */;
@@ -393,6 +400,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B9410C529CB4528006753E0 /* roll.wav in Resources */,
+				3B3748E229E44B180011535B /* Localizable.strings in Resources */,
 				3B9410C329CB451E006753E0 /* drum.wav in Resources */,
 				3BC38F7F29C153CF00158D35 /* LaunchScreen.storyboard in Resources */,
 				3BC38F7C29C153CF00158D35 /* Assets.xcassets in Resources */,
@@ -573,10 +581,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		3B3748E429E44B180011535B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3B3748E329E44B180011535B /* ja */,
+				3B3748E529E44B1C0011535B /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		3BC38F7829C153CC00158D35 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				3BC38F7929C153CC00158D35 /* Base */,
+				3B3748DE29E44AB30011535B /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -585,6 +603,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				3BC38F7E29C153CF00158D35 /* Base */,
+				3B3748DF29E44AB30011535B /* ja */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -596,6 +615,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -656,6 +676,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "タイトル"; ObjectID = "8Op-hf-Pfj"; */
+"8Op-hf-Pfj.text" = "タイトル";
+
+/* Class = "UIButton"; normalTitle = "項目を追加"; ObjectID = "GVC-Bz-k0f"; */
+"GVC-Bz-k0f.normalTitle" = "項目を追加";
+
+/* Class = "UIViewController"; title = "TemplateViewController"; ObjectID = "Phz-Dd-I7v"; */
+"Phz-Dd-I7v.title" = "TemplateViewController";
+
+/* Class = "UILabel"; text = "テンプレートとして保存する"; ObjectID = "WXW-S4-AB4"; */
+"WXW-S4-AB4.text" = "テンプレートとして保存する";
+
+/* Class = "UIButton"; normalTitle = "データをセット"; ObjectID = "XCH-0r-q9f"; */
+"XCH-0r-q9f.normalTitle" = "データをセット";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "bL6-rz-8eL"; */
+"bL6-rz-8eL.text" = "Label";
+
+/* Class = "UIViewController"; title = "NewRuletteViewController"; ObjectID = "iot-V8-4rJ"; */
+"iot-V8-4rJ.title" = "NewRuletteViewController";
