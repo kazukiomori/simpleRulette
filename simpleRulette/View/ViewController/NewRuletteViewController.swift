@@ -37,33 +37,33 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func navigationItemSet() {
-        var addBarButtonItem = UIBarButtonItem(title: "保存", style: .done, target: self, action: #selector(addButtonTapped))
+        var addBarButtonItem = UIBarButtonItem(title: NSLocalizedString("save", comment: ""), style: .done, target: self, action: #selector(addButtonTapped))
         addBarButtonItem.tintColor = .black
         self.navigationItem.rightBarButtonItems = [addBarButtonItem]
         
-        titleTextField.placeholder = "未設定"
+        titleTextField.placeholder = NSLocalizedString("titlePlaceholder", comment: "")
         titleString = titleTextField.text!
         self.navigationItem.titleView = titleTextField
     }
     
     @objc func addButtonTapped() {
         if titleTextField.text == "" {
-            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットのタイトルが入力されていません")
+            messageAlert.shared.showErrorMessage(title: NSLocalizedString("error", comment: ""), body: NSLocalizedString("rouletteTitleNotEntered", comment: ""))
             return
         }
         
         if dataItems.count == 0 {
-            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を追加してください")
+            messageAlert.shared.showErrorMessage(title: NSLocalizedString("error", comment: ""), body: NSLocalizedString("pleaseAddARouletteItem", comment: ""))
             return
         }
         
         if dataItems.count == 1 {
-            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目が1つしかありません")
+            messageAlert.shared.showErrorMessage(title: NSLocalizedString("error", comment: ""), body: NSLocalizedString("thereIsOnlyOneRouletteItem", comment: ""))
             return
         }
         
         if dataItems.contains("") {
-            messageAlert.shared.showErrorMessage(title: "エラー", body: "ルーレットの項目を正しく入力してください")
+            messageAlert.shared.showErrorMessage(title: NSLocalizedString("error", comment: ""), body: NSLocalizedString("pleaseEnterTheRouletteItemsCorrectly", comment: ""))
             return
         }
         
@@ -107,7 +107,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "削除") { (action, view, completionHandler) in
+        let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("delete", comment: "")) { (action, view, completionHandler) in
             self.dataItems.remove(at: indexPath.row)
             self.dataColors.remove(at: indexPath.row)
             tableView.reloadData()

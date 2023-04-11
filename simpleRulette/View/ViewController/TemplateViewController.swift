@@ -21,7 +21,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        self.navigationItem.title = "テンプレート"
+        self.navigationItem.title = NSLocalizedString("templates", comment: "") 
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +45,7 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "削除") { (action, view, completionHandler) in
+        let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("delete", comment: "") ) { (action, view, completionHandler) in
             self.ruletteViewModel.deleteRuletteData(rulette: self.ruletteList[indexPath.item])
             self.ruletteList.remove(at: indexPath.row)
             tableView.reloadData()

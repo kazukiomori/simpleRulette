@@ -17,7 +17,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var bannerView: UIView!
     var buttonStartFlg = true
-    var titleString = "タイトル"
+    var titleString = NSLocalizedString("titleString", comment: "")
     var items: [String] = [""]
     
     var dataEntries = [
@@ -39,9 +39,9 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewWillAppear(animated)
         titleLabel.text = titleString
         if items.count == 1 {
-            resultLabel.text = "データをセットしてください"
+            resultLabel.text = NSLocalizedString("setData", comment: "")
         } else {
-            resultLabel.text = "ルーレットをタップしてスタート"
+            resultLabel.text = NSLocalizedString("tapRulette", comment: "")
         }
         
         setupPieChartView()
@@ -49,7 +49,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: 関数
     func setupPieChartView() {
-        self.pieChartView.centerText = "スタート"
+        self.pieChartView.centerText = NSLocalizedString("start", comment: "")
         dataEntries = []
         for item in items {
             let dataEntry = PieChartDataEntry(value: Double(100 / items.count), label: item)
@@ -83,7 +83,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         
         if buttonStartFlg {
             drum.play()
-            self.pieChartView.centerText = "ストップ"
+            self.pieChartView.centerText = NSLocalizedString("stop", comment: "")
             pieChartView.layer.speed = 2.0
             animation.toValue = .pi / 2.0
             animation.duration = 0.1
@@ -91,11 +91,11 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             animation.isCumulative = true
             pieChartView.layer.add(animation, forKey: "ImageViewRotation")
             buttonStartFlg = false
-            resultLabel.text = "ルーレットをタップしてストップ"
+            resultLabel.text = NSLocalizedString("tapRuletteToStop", comment: "")
         } else {
             drum.stop()
             roll.play()
-            self.pieChartView.centerText = "スタート"
+            self.pieChartView.centerText = NSLocalizedString("start", comment: "")
             let pausedTime = pieChartView.layer.convertTime(CACurrentMediaTime(), from: nil)
             pieChartView.layer.speed = 0.0
             pieChartView.layer.timeOffset = pausedTime
@@ -122,7 +122,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 for item in items {
                     itemValue += 100 / items.count
                     if per < Double(itemValue) || count == items.count {
-                        resultLabel.text = "結果は\(item)です"
+                        resultLabel.text = NSLocalizedString("result\(item)", comment: "")
                         return
                     }
                     count += 1
@@ -132,10 +132,10 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func tappedAddDataButton(_ sender: Any) {
-        let actionSheet = UIAlertController(title: "データをセット", message: "", preferredStyle: UIAlertController.Style.actionSheet)
+        let actionSheet = UIAlertController(title: NSLocalizedString("setAData", comment: ""), message: "", preferredStyle: UIAlertController.Style.actionSheet)
         
         // 表示させたいタイトル1ボタンが押された時の処理をクロージャ実装する
-        let action1 = UIAlertAction(title: "新規追加", style: UIAlertAction.Style.default, handler: {
+        let action1 = UIAlertAction(title: NSLocalizedString("newAdditions", comment: ""), style: UIAlertAction.Style.default, handler: {
             (action: UIAlertAction!) in
             //実際の処理
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
@@ -143,7 +143,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
             self.navigationController?.show(newViewController, sender: nil)
         })
         // 表示させたいタイトル2ボタンが押された時の処理をクロージャ実装する
-        let action2 = UIAlertAction(title: "テンプレートから選ぶ", style: UIAlertAction.Style.default, handler: {
+        let action2 = UIAlertAction(title: NSLocalizedString("selectFromTemplates", comment: ""), style: UIAlertAction.Style.default, handler: {
             (action: UIAlertAction!) in
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             guard let nextViewController = storyBoard.instantiateViewController(withIdentifier: "TemplateViewController") as? TemplateViewController else { return }
@@ -152,7 +152,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         
         // 閉じるボタンが押された時の処理をクロージャ実装する
         //UIAlertActionのスタイルがCancelなので赤く表示される
-        let close = UIAlertAction(title: "閉じる", style: UIAlertAction.Style.destructive, handler: {
+        let close = UIAlertAction(title: NSLocalizedString("close", comment: ""), style: UIAlertAction.Style.destructive, handler: {
             (action: UIAlertAction!) in
             //実際の処理
             

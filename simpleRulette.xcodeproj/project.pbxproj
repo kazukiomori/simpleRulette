@@ -57,6 +57,7 @@
 		3B3748DF29E44AB30011535B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		3B3748E329E44B180011535B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3B3748E529E44B1C0011535B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3B3748E729E59EC20011535B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		3B5044BA29C37FD0004B4425 /* TemplateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
 		3B5044BC29C38034004B4425 /* NewRuletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRuletteViewController.swift; sourceTree = "<group>"; };
 		3B5044C029C3F171004B4425 /* RuletteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteTableViewCell.swift; sourceTree = "<group>"; };
@@ -595,6 +596,7 @@
 			children = (
 				3BC38F7929C153CC00158D35 /* Base */,
 				3B3748DE29E44AB30011535B /* ja */,
+				3B3748E729E59EC20011535B /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

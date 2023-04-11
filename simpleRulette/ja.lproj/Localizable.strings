@@ -5,3 +5,32 @@
   Created by Kazuki Omori on 2023/04/10.
   
 */
+// RuletteTableViewCell
+"placeholder" = "未設定";
+
+// RuletteViewController
+"titleString" = "タイトル";
+"setData" = "データをセットしてください";
+"tapRulette" = "ルーレットをタップしてスタート";
+"start" = "スタート";
+"stop" = "ストップ";
+"tapRuletteToStop" = "ルーレットをタップしてストップ";
+"result@" = "結果は@です";
+"setAData" = "データをセット";
+"newAdditions" = "新規追加";
+"selectFromTemplates" = "テンプレートから選ぶ";
+"close" = "閉じる";
+
+// TemplateViewController
+"templates" = "テンプレート";
+"delete" = "削除";
+
+// NewRuletteViewController
+"save" = "保存";
+"titlePlaceholder" = "未設定";
+"error" = "エラー";
+"rouletteTitleNotEntered" = "ルーレットのタイトルが入力されていません";
+"pleaseAddARouletteItem" = "ルーレットの項目を追加してください";
+"thereIsOnlyOneRouletteItem" = "ルーレットの項目が1つしかありません";
+"pleaseEnterTheRouletteItemsCorrectly" = "ルーレットの項目を正しく入力してください";
+"delete" = "削除";

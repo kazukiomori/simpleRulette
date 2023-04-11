@@ -5,3 +5,32 @@
   Created by Kazuki Omori on 2023/04/10.
   
 */
+// RuletteTableViewCell
+"placeholder" = "unset";
+
+// RuletteViewController
+"titleString" = "Title";
+"setData" = "Set a data";
+"tapRulette" = "Tap the Rulette";
+"start" = "Start";
+"stop" = "Stop";
+"tapRuletteToStop" = "Tap roulette to stop";
+"result@" = "result is @";
+"setAData" = "Set a data";
+"newAdditions" = "New additions";
+"selectFromTemplates" = "Select from templates";
+"close" = "Close";
+
+// TemplateViewController
+"templates" = "Templates";
+"delete" = "Delete";
+
+// NewRuletteViewController
+"save" = "Save";
+"titlePlaceholder" = "unset";
+"error" = "Error";
+"rouletteTitleNotEntered" = "Roulette title not entered.";
+"pleaseAddARouletteItem" = "Please add a roulette item.";
+"thereIsOnlyOneRouletteItem" = "There is only one roulette item.";
+"pleaseEnterTheRouletteItemsCorrectly" = "Please enter the roulette items correctly.";
+"delete" = "Delete";
