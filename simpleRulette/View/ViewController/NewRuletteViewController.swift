@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import GoogleMobileAds
 
 class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, RuletteTableViewCellDelegate {
     
@@ -19,6 +20,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var templateSwitch: UISwitch!
     let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2 + 40, height: 30))
     
+    @IBOutlet weak var bannerView: GADBannerView!
     // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +29,9 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         titleTextField.delegate = self
         navigationItemSet()
         templateSwitch.isOn = false
+        bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
     
     // MARK: 関数

@@ -7,12 +7,13 @@
 
 import Foundation
 import UIKit
+import GoogleMobileAds
 
 class TemplateViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: プロパティ
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var bannerView: UIView!
+    @IBOutlet weak var bannerView: GADBannerView!
     var ruletteList: [Rulette] = []
     let ruletteViewModel = RuletteViewModel()
     
@@ -21,7 +22,10 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        self.navigationItem.title = NSLocalizedString("templates", comment: "") 
+        self.navigationItem.title = NSLocalizedString("templates", comment: "")
+        bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -7,6 +7,7 @@
 
 import UIKit
 import Charts
+import GoogleMobileAds
 
 class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     
@@ -15,7 +16,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var triangleImage: UIImageView!
     @IBOutlet weak var resultLabel: UILabel!
-    @IBOutlet weak var bannerView: UIView!
+    @IBOutlet weak var bannerView: GADBannerView!
     var buttonStartFlg = true
     var titleString = NSLocalizedString("titleString", comment: "")
     var items: [String] = [""]
@@ -33,6 +34,9 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         tapGesture.delegate = self
         triangleImage.tintColor = .black
         resultLabel.adjustsFontSizeToFitWidth = true
+        bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
     
     override func viewWillAppear(_ animated: Bool) {
