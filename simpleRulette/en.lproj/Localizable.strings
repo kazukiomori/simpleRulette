@@ -15,7 +15,7 @@
 "start" = "Start";
 "stop" = "Stop";
 "tapRuletteToStop" = "Tap roulette to stop";
-"result@" = "result is @";
+"result" = "result is %@";
 "setAData" = "Set a data";
 "newAdditions" = "New additions";
 "selectFromTemplates" = "Select from templates";

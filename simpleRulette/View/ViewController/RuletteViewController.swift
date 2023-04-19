@@ -125,8 +125,8 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
                 var count = 0
                 for item in items {
                     itemValue += 100 / items.count
-                    if per < Double(itemValue) || count == items.count {
-                        resultLabel.text = NSLocalizedString("result\(item)", comment: "")
+                    if per < Double(itemValue) {
+                        resultLabel.text = String(format: NSLocalizedString("result", comment: ""), item)
                         return
                     }
                     count += 1

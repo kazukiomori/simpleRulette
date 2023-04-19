@@ -15,7 +15,7 @@
 "start" = "スタート";
 "stop" = "ストップ";
 "tapRuletteToStop" = "ルーレットをタップしてストップ";
-"result@" = "結果は@です";
+"result" = "結果は%@です";
 "setAData" = "データをセット";
 "newAdditions" = "新規追加";
 "selectFromTemplates" = "テンプレートから選ぶ";
