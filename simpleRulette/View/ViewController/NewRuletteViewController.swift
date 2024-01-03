@@ -18,7 +18,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     var isSaved = false
     var titleString = ""
     @IBOutlet weak var templateSwitch: UISwitch!
-    let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: (UINavigationController.init().navigationBar.frame.width) / 2 + 40, height: 30))
+    let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: 300, height: 30))
     
     @IBOutlet weak var bannerView: GADBannerView!
     // MARK: ライフサイクル
