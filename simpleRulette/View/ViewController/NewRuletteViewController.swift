@@ -32,6 +32,9 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
+        let tapGR: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGR.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(tapGR)
     }
     
     // MARK: 関数
@@ -97,6 +100,11 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
             self.isSaved = false
         }
     }
+    
+    @objc func dismissKeyboard() {
+        titleTextField.endEditing(true)
+    }
+    
     // MARK: tableView関連
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataItems.count

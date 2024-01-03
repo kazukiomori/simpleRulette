@@ -20,6 +20,15 @@ class RuletteTableViewCell: UITableViewCell, UITextViewDelegate, UITextFieldDele
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        let toolBar = UIToolbar()
+        toolBar.sizeToFit()
+        // スペーサー構築
+        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+        // 閉じるボタン構築
+        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action:#selector(closeButtonTapped))
+        
+        toolBar.items = [spacer, closeButton]
+        textView.inputAccessoryView = toolBar
         textView.delegate = self
         textView.placeholder = NSLocalizedString("placeholder", comment: "")
     }
@@ -27,6 +36,14 @@ class RuletteTableViewCell: UITableViewCell, UITextViewDelegate, UITextFieldDele
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         textView.delegate = self
+    }
+    
+        // MARK: - 閉じるボタン
+    @objc  func closeButtonTapped() {
+        self.textView.endEditing(true)
+        if let text = self.textView.text {
+            delegate?.textViewDidEndEditing(text: text, forCell: self)
+        }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
