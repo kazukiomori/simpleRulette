@@ -29,12 +29,9 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         titleTextField.delegate = self
         navigationItemSet()
         templateSwitch.isOn = false
-        bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
+        bannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
-        let tapGR: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGR.cancelsTouchesInView = false
-        tableView.addGestureRecognizer(tapGR)
     }
     
     // MARK: 関数
@@ -99,10 +96,6 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         } else {
             self.isSaved = false
         }
-    }
-    
-    @objc func dismissKeyboard() {
-        titleTextField.endEditing(true)
     }
     
     // MARK: tableView関連

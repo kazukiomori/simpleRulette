@@ -34,7 +34,7 @@ class RuletteViewController: UIViewController, UIGestureRecognizerDelegate {
         tapGesture.delegate = self
         triangleImage.tintColor = .black
         resultLabel.adjustsFontSizeToFitWidth = true
-        bannerView.adUnitID = "ca-app-pub-3293568654583905/5620314493"
+        bannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
     }
