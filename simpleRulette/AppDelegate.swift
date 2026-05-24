@@ -6,15 +6,21 @@
 //
 
 import UIKit
-import RealmSwift
 import GoogleMobileAds
+
+enum AppRuntime {
+    static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+}
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        if !AppRuntime.isRunningTests {
+            MobileAds.shared.start(completionHandler: nil)
+        }
         return true
     }
     

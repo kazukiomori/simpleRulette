@@ -13,7 +13,8 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     
     // MARK: プロパティ
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var bannerView: GADBannerView!
+    @IBOutlet weak var bannerView: UIView!
+    private var adBannerView: BannerView?
     var ruletteList: [Rulette] = []
     let ruletteViewModel = RuletteViewModel()
     
@@ -23,9 +24,22 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         self.navigationItem.title = NSLocalizedString("templates", comment: "")
-        bannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
-        bannerView.rootViewController = self
-        bannerView.load(GADRequest())
+        if AppRuntime.isRunningTests {
+            bannerView.isHidden = true
+            return
+        }
+        configureBannerView()
+    }
+
+    private func configureBannerView() {
+        let adBannerView = BannerView(adSize: AdSizeBanner)
+        adBannerView.frame = bannerView.bounds
+        adBannerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        adBannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
+        adBannerView.rootViewController = self
+        bannerView.addSubview(adBannerView)
+        adBannerView.load(Request())
+        self.adBannerView = adBannerView
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,12 +76,9 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
-        if let previousViewController = navigationController?.viewControllers[0] as? RuletteViewController {
+        if let previousViewController = navigationController?.viewControllers.first as? RuletteViewController {
             previousViewController.titleString = ruletteList[indexPath.row].title
-            var items: [String] = []
-            for item in ruletteList[indexPath.row].ruletteItems {
-                items.append(item.item)
-            }
+            let items = ruletteList[indexPath.row].ruletteItems.map(\.item)
             previousViewController.items = items
         }
         //前の画面に戻る

@@ -6,16 +6,13 @@
 //
 
 import Foundation
-import UIKit
-import RealmSwift
 
-@objcMembers
-
-class Rulette: Object {
-    @objc dynamic var title: String = ""
-    var ruletteItems = List<ruletteItem>()
+struct Rulette: Codable, Equatable {
+    var id: String = UUID().uuidString
+    var title: String = ""
+    var ruletteItems: [RuletteItem] = []
 }
 
-class ruletteItem: Object {
-    @objc dynamic var item: String = ""
+struct RuletteItem: Codable, Equatable {
+    var item: String = ""
 }

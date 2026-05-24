@@ -20,7 +20,8 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var templateSwitch: UISwitch!
     let titleTextField = UITextField(frame: CGRect(x: 30, y: 0, width: 300, height: 30))
     
-    @IBOutlet weak var bannerView: GADBannerView!
+    @IBOutlet weak var bannerView: UIView!
+    private var adBannerView: BannerView?
     // MARK: ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +30,22 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         titleTextField.delegate = self
         navigationItemSet()
         templateSwitch.isOn = false
-        bannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
-        bannerView.rootViewController = self
-        bannerView.load(GADRequest())
+        if AppRuntime.isRunningTests {
+            bannerView.isHidden = true
+            return
+        }
+        configureBannerView()
+    }
+
+    private func configureBannerView() {
+        let adBannerView = BannerView(adSize: AdSizeBanner)
+        adBannerView.frame = bannerView.bounds
+        adBannerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        adBannerView.adUnitID = "ca-app-pub-9554476195266174/5074035808"
+        adBannerView.rootViewController = self
+        bannerView.addSubview(adBannerView)
+        adBannerView.load(Request())
+        self.adBannerView = adBannerView
     }
     
     // MARK: 関数
@@ -47,11 +61,13 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         self.navigationItem.rightBarButtonItems = [addBarButtonItem]
         
         titleTextField.placeholder = NSLocalizedString("titlePlaceholder", comment: "")
-        titleString = titleTextField.text!
+        titleString = titleTextField.text ?? ""
         self.navigationItem.titleView = titleTextField
     }
     
     @objc func addButtonTapped() {
+        view.endEditing(true)
+
         if titleTextField.text == "" {
             messageAlert.shared.showErrorMessage(title: NSLocalizedString("error", comment: ""), body: NSLocalizedString("rouletteTitleNotEntered", comment: ""))
             return
@@ -76,14 +92,14 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
             //テンプレートに保存する場合
             //realmに保存
             let ruletteViewModel = RuletteViewModel()
-            ruletteViewModel.addData(title: titleTextField.text!, items: dataItems)
+            ruletteViewModel.addData(title: titleTextField.text ?? "", items: dataItems)
         } else {
             //テンプレートに保存しない場合
             //こっちのルートはおそらくいらない
         }
         //前の画面にルーレットの値の入ったモデルを渡す
-        if let previousViewController = navigationController?.viewControllers[0] as? RuletteViewController {
-            previousViewController.titleString = self.titleString
+        if let previousViewController = navigationController?.viewControllers.first as? RuletteViewController {
+            previousViewController.titleString = titleTextField.text ?? ""
             previousViewController.items = self.dataItems
         }
         //前の画面に戻る
@@ -130,7 +146,7 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == titleTextField {
-            titleString = titleTextField.text!
+            titleString = titleTextField.text ?? ""
             return
         }
         if let text = textField.text {
