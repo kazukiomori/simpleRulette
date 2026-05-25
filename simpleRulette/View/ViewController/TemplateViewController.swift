@@ -76,9 +76,15 @@ class TemplateViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+        let selectedRulette = ruletteList[indexPath.row]
+        ruletteViewModel.saveCurrentData(
+            title: selectedRulette.title,
+            items: selectedRulette.ruletteItems.map(\.item),
+            weights: selectedRulette.ruletteItems.map { $0.weight }
+        )
         if let previousViewController = navigationController?.viewControllers.first as? RuletteViewController {
-            previousViewController.titleString = ruletteList[indexPath.row].title
-            let items = ruletteList[indexPath.row].ruletteItems.map(\.item)
+            previousViewController.titleString = selectedRulette.title
+            let items = selectedRulette.ruletteItems.map(\.item)
             previousViewController.items = items
         }
         //前の画面に戻る

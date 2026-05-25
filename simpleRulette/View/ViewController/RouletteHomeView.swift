@@ -42,8 +42,8 @@ struct RouletteHomeView: View {
             )
         }
         .fullScreenCover(isPresented: $isShowingEditor) {
-            RouletteEditorView(items: viewModel.items) { items in
-                viewModel.updateItems(items)
+            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights) { items, weights in
+                viewModel.updateConfiguration(items: items, weights: weights)
             }
         }
         .sheet(isPresented: $isShowingHistory) {
@@ -87,6 +87,7 @@ struct RouletteHomeView: View {
         ZStack(alignment: .top) {
             RouletteWheelView(
                 items: viewModel.items,
+                weights: viewModel.itemWeights,
                 rotationAngle: viewModel.rotationAngle,
                 colors: viewModel.palette
             )
@@ -194,6 +195,7 @@ struct RouletteHomeView: View {
 final class RouletteHomeViewModel: ObservableObject {
     @Published var title: String
     @Published var items: [String]
+    @Published var itemWeights: [Double]
     @Published var resultText: String
     @Published var history: [String] = []
     @Published var isSpinning = false
@@ -211,13 +213,24 @@ final class RouletteHomeViewModel: ObservableObject {
     ]
 
     private var spinTimer: Timer?
+    private let ruletteViewModel = RuletteViewModel()
 
     init() {
-        let savedRoulette = RuletteViewModel().fetchAllData().first
-        let savedItems = savedRoulette?.ruletteItems.map(\.item).filter { !$0.isEmpty }
+        let savedRoulette = ruletteViewModel.fetchCurrentData() ?? ruletteViewModel.fetchAllData().first
+        let savedEntries = (savedRoulette?.ruletteItems ?? []).compactMap { entry -> (String, Double)? in
+            let trimmedItem = entry.item.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedItem.isEmpty else {
+                return nil
+            }
+            return (trimmedItem, Double(entry.weight))
+        }
+        let savedItems = savedEntries.map(\.0)
 
+        let resolvedItems = savedItems.count >= 2 ? savedItems : ["映画", "カフェ", "散歩", "読書", "勉強", "運動", "昼寝", "買い物"]
         title = (savedRoulette?.title.isEmpty == false ? savedRoulette?.title : nil) ?? NSLocalizedString("rouletteScreenTitle", comment: "")
-        items = (savedItems?.count ?? 0) >= 2 ? (savedItems ?? []) : ["映画", "カフェ", "散歩", "読書", "勉強", "運動", "昼寝", "買い物"]
+        items = resolvedItems
+        let savedWeights = savedEntries.map(\.1)
+        itemWeights = savedItems.count >= 2 ? Self.normalizedWeights(savedWeights, count: savedItems.count) : RouletteEditorView.defaultWeights(for: resolvedItems.count)
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
     }
 
@@ -234,7 +247,7 @@ final class RouletteHomeViewModel: ObservableObject {
         }
     }
 
-    func updateItems(_ updatedItems: [String]) {
+    func updateConfiguration(items updatedItems: [String], weights updatedWeights: [Double]) {
         let filtered = updatedItems
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
@@ -244,11 +257,17 @@ final class RouletteHomeViewModel: ObservableObject {
         }
 
         items = filtered
+        itemWeights = Self.normalizedWeights(updatedWeights, count: filtered.count)
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
         history.removeAll()
         rotationAngle = 0
         stopTimer()
         isSpinning = false
+        ruletteViewModel.saveCurrentData(
+            title: title,
+            items: items,
+            weights: itemWeights.map { Int($0.rounded()) }
+        )
     }
 
     private func startSpin() {
@@ -265,9 +284,9 @@ final class RouletteHomeViewModel: ObservableObject {
         stopTimer()
         isSpinning = false
 
-        let winningIndex = Int.random(in: 0..<items.count)
-        let sectionAngle = 360.0 / Double(items.count)
-        let targetAngle = 360.0 - (sectionAngle * (Double(winningIndex) + 0.5))
+        let winningIndex = weightedWinningIndex() ?? Int.random(in: 0..<items.count)
+        let segments = rouletteWheelSegments(weights: itemWeights, itemCount: items.count)
+        let targetAngle = segments[safe: winningIndex]?.targetRotationDegrees ?? 0
         let normalized = rotationAngle.truncatingRemainder(dividingBy: 360)
         var delta = targetAngle - normalized
         if delta < 0 {
@@ -291,10 +310,39 @@ final class RouletteHomeViewModel: ObservableObject {
         spinTimer?.invalidate()
         spinTimer = nil
     }
+
+    private func weightedWinningIndex() -> Int? {
+        let normalized = Self.normalizedWeights(itemWeights, count: items.count)
+        guard normalized.count == items.count else {
+            return nil
+        }
+
+        let totalWeight = normalized.reduce(0, +)
+        guard totalWeight > 0 else {
+            return nil
+        }
+
+        let winningValue = Double.random(in: 0..<totalWeight)
+        var cumulativeWeight = 0.0
+
+        for (index, weight) in normalized.enumerated() {
+            cumulativeWeight += weight
+            if winningValue < cumulativeWeight {
+                return index
+            }
+        }
+
+        return normalized.indices.last
+    }
+
+    private static func normalizedWeights(_ weights: [Double], count: Int) -> [Double] {
+        rouletteResolvedWeights(weights, itemCount: count)
+    }
 }
 
 struct RouletteWheelView: View {
     let items: [String]
+    let weights: [Double]
     let rotationAngle: Double
     let colors: [Color]
 
@@ -304,7 +352,7 @@ struct RouletteWheelView: View {
             let radius = size / 2
             let labelRadius = radius * 0.64
             let center = CGPoint(x: radius, y: radius)
-            let sectionAngle = 360.0 / Double(max(items.count, 1))
+            let segments = rouletteWheelSegments(weights: weights, itemCount: items.count)
 
             ZStack {
                 Circle()
@@ -312,9 +360,15 @@ struct RouletteWheelView: View {
                     .shadow(color: Color.black.opacity(0.08), radius: 18, x: 0, y: 10)
 
                 ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-                    let startAngle = Angle.degrees((Double(index) * sectionAngle) - 90)
-                    let endAngle = Angle.degrees((Double(index + 1) * sectionAngle) - 90)
-                    let middleAngle = Angle.degrees((Double(index) + 0.5) * sectionAngle - 90)
+                    let segment = segments[safe: index] ?? RouletteWheelSegment(
+                        startDegrees: -90,
+                        endDegrees: 270,
+                        middleDegrees: 90,
+                        targetRotationDegrees: 0
+                    )
+                    let startAngle = Angle.degrees(segment.startDegrees)
+                    let endAngle = Angle.degrees(segment.endDegrees)
+                    let middleAngle = Angle.degrees(segment.middleDegrees)
                     let point = CGPoint(
                         x: center.x + CGFloat(cos(middleAngle.radians)) * labelRadius,
                         y: center.y + CGFloat(sin(middleAngle.radians)) * labelRadius
@@ -382,6 +436,44 @@ struct PointerTriangle: Shape {
     }
 }
 
+private struct RouletteWheelSegment {
+    let startDegrees: Double
+    let endDegrees: Double
+    let middleDegrees: Double
+    let targetRotationDegrees: Double
+}
+
+private func rouletteResolvedWeights(_ weights: [Double], itemCount: Int) -> [Double] {
+    let trimmed = Array(weights.prefix(itemCount))
+    guard trimmed.count == itemCount, trimmed.contains(where: { $0 > 0 }) else {
+        return RouletteEditorView.defaultWeights(for: itemCount)
+    }
+    return RouletteEditorView.normalizedWeights(from: trimmed)
+}
+
+private func rouletteWheelSegments(weights: [Double], itemCount: Int) -> [RouletteWheelSegment] {
+    guard itemCount > 0 else {
+        return []
+    }
+
+    let resolvedWeights = rouletteResolvedWeights(weights, itemCount: itemCount)
+    let totalWeight = max(resolvedWeights.reduce(0, +), 1)
+    var cumulativeDegrees = 0.0
+
+    return resolvedWeights.map { weight in
+        let spanDegrees = (weight / totalWeight) * 360
+        let middleRelativeDegrees = cumulativeDegrees + (spanDegrees / 2)
+        let segment = RouletteWheelSegment(
+            startDegrees: cumulativeDegrees - 90,
+            endDegrees: cumulativeDegrees + spanDegrees - 90,
+            middleDegrees: middleRelativeDegrees - 90,
+            targetRotationDegrees: (360 - middleRelativeDegrees).truncatingRemainder(dividingBy: 360)
+        )
+        cumulativeDegrees += spanDegrees
+        return segment
+    }
+}
+
 struct RouletteEditorView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var draftItems: [String]
@@ -389,11 +481,11 @@ struct RouletteEditorView: View {
     @State private var isShowingWeightSettings = false
     @State private var itemWeights: [Double]
 
-    let onSave: ([String]) -> Void
+    let onSave: ([String], [Double]) -> Void
 
-    init(items: [String], onSave: @escaping ([String]) -> Void) {
+    init(items: [String], weights: [Double], onSave: @escaping ([String], [Double]) -> Void) {
         _draftItems = State(initialValue: items)
-        _itemWeights = State(initialValue: Self.defaultWeights(for: items.count))
+        _itemWeights = State(initialValue: weights.isEmpty ? Self.defaultWeights(for: items.count) : Self.normalizedWeights(from: weights))
         self.onSave = onSave
     }
 
@@ -453,7 +545,9 @@ struct RouletteEditorView: View {
             Spacer()
 
             Button(action: {
-                onSave(cleanedItems)
+                let savedItems = cleanedItems.filter { !$0.isEmpty }
+                let savedWeights = Self.normalizedWeights(from: Array(itemWeights.prefix(savedItems.count)))
+                onSave(savedItems, savedWeights)
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text(NSLocalizedString("rouletteDone", comment: ""))
@@ -646,6 +740,7 @@ struct RouletteEditorView: View {
     private func syncWeightsWithItems() {
         let count = max(cleanedItemsForDisplay.count, 2)
         if itemWeights.count == count {
+            itemWeights = Self.normalizedWeights(from: itemWeights)
             return
         }
 
@@ -668,26 +763,100 @@ struct RouletteEditorView: View {
             return []
         }
 
-        let base = Array(repeating: floor(100.0 / Double(count)), count: count)
-        var weights = base
-        let diff = 100 - Int(weights.reduce(0, +))
-        if diff > 0, let lastIndex = weights.indices.last {
-            weights[lastIndex] += Double(diff)
+        let minimum = minimumWeight(for: count)
+        var weights = Array(repeating: minimum, count: count)
+        let remaining = max(100 - (minimum * count), 0)
+
+        guard remaining > 0 else {
+            return weights.map(Double.init)
         }
-        return weights
+
+        let baseExtra = remaining / count
+        let remainder = remaining % count
+
+        for index in weights.indices {
+            weights[index] += baseExtra
+            if index < remainder {
+                weights[index] += 1
+            }
+        }
+
+        return weights.map(Double.init)
     }
 
     static func normalizedWeights(from weights: [Double]) -> [Double] {
         guard !weights.isEmpty else {
             return []
         }
-        let sum = max(weights.reduce(0, +), 1)
-        var normalized = weights.map { floor(($0 / sum) * 100) }
-        let remainder = 100 - Int(normalized.reduce(0, +))
-        if remainder > 0, let maxIndex = normalized.indices.max(by: { normalized[$0] < normalized[$1] }) {
-            normalized[maxIndex] += Double(remainder)
+
+        let count = weights.count
+        let minimum = minimumWeight(for: count)
+        let normalized = distribute(total: 100, basedOn: weights.map { Int($0.rounded()) }, minimum: minimum)
+        return normalized.map(Double.init)
+    }
+
+    static func minimumWeight(for count: Int) -> Int {
+        guard count > 0 else {
+            return 0
         }
-        return normalized
+        return count <= 100 ? 1 : 0
+    }
+
+    static func maximumWeight(for count: Int) -> Int {
+        guard count > 0 else {
+            return 0
+        }
+
+        let minimum = minimumWeight(for: count)
+        return max(minimum, 100 - (minimum * (count - 1)))
+    }
+
+    static func distribute(total: Int, basedOn weights: [Int], minimum: Int) -> [Int] {
+        guard !weights.isEmpty else {
+            return []
+        }
+
+        let count = weights.count
+        var distributed = Array(repeating: minimum, count: count)
+        let remaining = total - (minimum * count)
+
+        guard remaining > 0 else {
+            return distributed
+        }
+
+        let priorities = weights.map { max($0 - minimum, 0) }
+        let prioritySum = priorities.reduce(0, +)
+
+        guard prioritySum > 0 else {
+            for offset in 0..<remaining {
+                distributed[offset % count] += 1
+            }
+            return distributed
+        }
+
+        let exactExtras = priorities.map { Double($0) / Double(prioritySum) * Double(remaining) }
+        let flooredExtras = exactExtras.map { Int(floor($0)) }
+        let remainder = remaining - flooredExtras.reduce(0, +)
+        let rankedIndices = exactExtras.indices.sorted {
+            let lhsFraction = exactExtras[$0] - Double(flooredExtras[$0])
+            let rhsFraction = exactExtras[$1] - Double(flooredExtras[$1])
+            if lhsFraction == rhsFraction {
+                return priorities[$0] > priorities[$1]
+            }
+            return lhsFraction > rhsFraction
+        }
+
+        for index in distributed.indices {
+            distributed[index] += flooredExtras[index]
+        }
+
+        if remainder > 0 {
+            for offset in 0..<remainder {
+                distributed[rankedIndices[offset % rankedIndices.count]] += 1
+            }
+        }
+
+        return distributed
     }
 }
 
@@ -702,7 +871,7 @@ struct RouletteWeightSettingsView: View {
     init(items: [String], weights: [Double], onSave: @escaping ([Double]) -> Void) {
         self.items = items
         self.onSave = onSave
-        _weights = State(initialValue: weights.isEmpty ? RouletteEditorView.defaultWeights(for: items.count) : weights)
+        _weights = State(initialValue: weights.isEmpty ? RouletteEditorView.defaultWeights(for: items.count) : RouletteEditorView.normalizedWeights(from: weights))
     }
 
     var body: some View {
@@ -859,7 +1028,7 @@ struct RouletteWeightSettingsView: View {
                     get: { weights[safe: index] ?? 0 },
                     set: { newValue in updateWeight(newValue, at: index) }
                 ),
-                in: 0...100,
+                in: Double(RouletteEditorView.minimumWeight(for: items.count))...Double(RouletteEditorView.maximumWeight(for: items.count)),
                 step: 1
             )
             .tint(.blue)
@@ -943,7 +1112,32 @@ struct RouletteWeightSettingsView: View {
         guard weights.indices.contains(index) else {
             return
         }
-        weights[index] = value
+
+        let count = weights.count
+        let minimum = RouletteEditorView.minimumWeight(for: count)
+        let maximum = RouletteEditorView.maximumWeight(for: count)
+        let target = min(max(Int(value.rounded()), minimum), maximum)
+
+        guard count > 1 else {
+            weights[index] = 100
+            return
+        }
+
+        let remainingIndices = weights.indices.filter { $0 != index }
+        let rebalancedOthers = RouletteEditorView.distribute(
+            total: 100 - target,
+            basedOn: remainingIndices.map { Int((weights[safe: $0] ?? 0).rounded()) },
+            minimum: minimum
+        )
+
+        var updatedWeights = Array(repeating: 0.0, count: count)
+        updatedWeights[index] = Double(target)
+
+        for (offset, otherIndex) in remainingIndices.enumerated() {
+            updatedWeights[otherIndex] = Double(rebalancedOthers[offset])
+        }
+
+        weights = updatedWeights
     }
 }
 

@@ -9,6 +9,7 @@ import Foundation
 
 class RuletteModel {
   private let storageKey = "savedRulettes"
+  private let currentStorageKey = "currentRoulette"
   private let encoder = JSONEncoder()
   private let decoder = JSONDecoder()
   private let userDefaults = UserDefaults.standard
@@ -33,6 +34,28 @@ class RuletteModel {
       return []
     }
     }
+
+  func saveCurrentData(rulette: Rulette) {
+    do {
+      let data = try encoder.encode(rulette)
+      userDefaults.set(data, forKey: currentStorageKey)
+    } catch {
+      print("Error \(error)")
+    }
+  }
+
+  func getCurrentRuletteData() -> Rulette? {
+    guard let data = userDefaults.data(forKey: currentStorageKey) else {
+      return nil
+    }
+
+    do {
+      return try decoder.decode(Rulette.self, from: data)
+    } catch {
+      print("Error \(error)")
+      return nil
+    }
+  }
 
     func deleteData(rulette: Rulette) {
     let filteredRulettes = getAllRuletteData().filter { $0.id != rulette.id }

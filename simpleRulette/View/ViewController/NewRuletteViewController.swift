@@ -90,9 +90,12 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if isSaved {
             //テンプレートに保存する場合
-            //realmに保存
             let ruletteViewModel = RuletteViewModel()
-            ruletteViewModel.addData(title: titleTextField.text ?? "", items: dataItems)
+            ruletteViewModel.addData(
+                title: titleTextField.text ?? "",
+                items: dataItems,
+                weights: defaultTemplateWeights(for: dataItems.count)
+            )
         } else {
             //テンプレートに保存しない場合
             //こっちのルートはおそらくいらない
@@ -165,5 +168,22 @@ class NewRuletteViewController: UIViewController, UITableViewDelegate, UITableVi
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+
+    private func defaultTemplateWeights(for count: Int) -> [Int] {
+        guard count > 0 else {
+            return []
+        }
+
+        var weights = Array(repeating: 100 / count, count: count)
+        let remainder = 100 - weights.reduce(0, +)
+
+        if remainder > 0 {
+            for offset in 0..<remainder {
+                weights[offset % count] += 1
+            }
+        }
+
+        return weights
     }
 }
