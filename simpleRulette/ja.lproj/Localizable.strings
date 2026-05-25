@@ -38,6 +38,9 @@
 "rouletteReorderHint" = "長押しして並び替えできます";
 "rouletteOptions" = "オプション";
 "rouletteWeightOption" = "重さ（当選確率）を設定";
+"rouletteRiggedModeOption" = "演出モードを設定";
+"rouletteRiggedModeDescription" = "ここで選んだ項目が必ず当たります。ジョークや演出用の固定当選モードです。";
+"rouletteRiggedBanner" = "演出モード中: %@ 固定";
 "rouletteSoundVolumeOption" = "効果音の音量";
 "rouletteOff" = "オフ";
 "rouletteOn" = "オン";

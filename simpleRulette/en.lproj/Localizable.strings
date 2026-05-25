@@ -38,6 +38,9 @@
 "rouletteReorderHint" = "Long press to reorder items";
 "rouletteOptions" = "Options";
 "rouletteWeightOption" = "Set Weight (Win Rate)";
+"rouletteRiggedModeOption" = "Set Performance Mode";
+"rouletteRiggedModeDescription" = "The selected item will always win. Use this for jokes or staged reveals.";
+"rouletteRiggedBanner" = "Performance mode: %@ fixed";
 "rouletteSoundVolumeOption" = "Sound Effect Volume";
 "rouletteOff" = "Off";
 "rouletteOn" = "On";

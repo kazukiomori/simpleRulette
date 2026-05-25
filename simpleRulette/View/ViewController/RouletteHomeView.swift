@@ -42,8 +42,8 @@ struct RouletteHomeView: View {
             )
         }
         .fullScreenCover(isPresented: $isShowingEditor) {
-            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights, currentTitle: viewModel.title, soundVolume: viewModel.soundVolume) { items, weights, soundVolume in
-                viewModel.updateConfiguration(items: items, weights: weights, soundVolume: soundVolume)
+            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights, currentTitle: viewModel.title, soundVolume: viewModel.soundVolume, forcedWinnerItem: viewModel.forcedWinnerItem) { items, weights, soundVolume, forcedWinnerItem in
+                viewModel.updateConfiguration(items: items, weights: weights, soundVolume: soundVolume, forcedWinnerItem: forcedWinnerItem)
             }
         }
         .sheet(isPresented: $isShowingTemplatePicker) {
@@ -87,6 +87,22 @@ struct RouletteHomeView: View {
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.gray)
         }
+    }
+
+    private func forcedWinnerBanner(item: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "theatermasks")
+                .font(.system(size: 16, weight: .semibold))
+
+            Text(String(format: NSLocalizedString("rouletteRiggedBanner", comment: ""), item))
+                .font(.system(size: 15, weight: .semibold))
+                .lineLimit(2)
+        }
+        .foregroundColor(Color(red: 0.62, green: 0.31, blue: 0.04))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(Color(red: 0.99, green: 0.95, blue: 0.84))
+        .clipShape(Capsule())
     }
 
     private var wheelSection: some View {
@@ -200,6 +216,7 @@ struct RouletteHomeView: View {
 
 final class RouletteHomeViewModel: ObservableObject {
     private static let soundVolumeKey = "rouletteSoundVolume"
+    private static let forcedWinnerItemKey = "rouletteForcedWinnerItem"
     private let stopAnimationDuration = 2.4
     private let resultRevealDelay = 0.04
     private let rollLeadTime = 0.08
@@ -209,6 +226,7 @@ final class RouletteHomeViewModel: ObservableObject {
     @Published var itemWeights: [Double]
     @Published var resultText: String
     @Published var soundVolume: Double
+    @Published var forcedWinnerItem: String?
     @Published var isSpinning = false
     @Published var rotationAngle = 0.0
 
@@ -248,6 +266,8 @@ final class RouletteHomeViewModel: ObservableObject {
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
         let storedSoundVolume = UserDefaults.standard.object(forKey: Self.soundVolumeKey) as? Double
         soundVolume = min(max(storedSoundVolume ?? 0.75, 0), 1)
+        let storedForcedWinnerItem = UserDefaults.standard.string(forKey: Self.forcedWinnerItemKey)
+        forcedWinnerItem = resolvedItems.contains(storedForcedWinnerItem ?? "") ? storedForcedWinnerItem : nil
         updateSoundPlayersVolume()
     }
 
@@ -264,12 +284,13 @@ final class RouletteHomeViewModel: ObservableObject {
         }
     }
 
-    func updateConfiguration(items updatedItems: [String], weights updatedWeights: [Double], soundVolume updatedSoundVolume: Double) {
+    func updateConfiguration(items updatedItems: [String], weights updatedWeights: [Double], soundVolume updatedSoundVolume: Double, forcedWinnerItem updatedForcedWinnerItem: String?) {
         let filtered = updatedItems
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
 
         applySoundVolumePreference(updatedSoundVolume)
+        applyForcedWinnerPreference(updatedForcedWinnerItem, items: filtered)
 
         guard filtered.count >= 2 else {
             stopAllSounds()
@@ -307,6 +328,7 @@ final class RouletteHomeViewModel: ObservableObject {
         items = entries.map(\.0)
         itemWeights = Self.normalizedWeights(entries.map(\.1), count: entries.count)
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
+        applyForcedWinnerPreference(nil, items: entries.map(\.0))
         rotationAngle = 0
         stopTimer()
         isSpinning = false
@@ -337,7 +359,7 @@ final class RouletteHomeViewModel: ObservableObject {
         drum.reset()
         cancelPendingSoundTasks()
 
-        let winningIndex = weightedWinningIndex() ?? Int.random(in: 0..<items.count)
+        let winningIndex = forcedWinningIndex() ?? weightedWinningIndex() ?? Int.random(in: 0..<items.count)
         let segments = rouletteWheelSegments(weights: itemWeights, itemCount: items.count)
         let targetAngle = segments[safe: winningIndex]?.targetRotationDegrees ?? 0
         let normalized = rotationAngle.truncatingRemainder(dividingBy: 360)
@@ -374,6 +396,18 @@ final class RouletteHomeViewModel: ObservableObject {
         updateSoundPlayersVolume()
         if soundVolume == 0 {
             stopAllSounds()
+        }
+    }
+
+    private func applyForcedWinnerPreference(_ item: String?, items availableItems: [String]) {
+        let trimmedItem = item?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedItem = trimmedItem.flatMap { availableItems.contains($0) ? $0 : nil }
+        forcedWinnerItem = resolvedItem
+
+        if let resolvedItem {
+            UserDefaults.standard.set(resolvedItem, forKey: Self.forcedWinnerItemKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: Self.forcedWinnerItemKey)
         }
     }
 
@@ -440,6 +474,13 @@ final class RouletteHomeViewModel: ObservableObject {
         }
 
         return normalized.indices.last
+    }
+
+    private func forcedWinningIndex() -> Int? {
+        guard let forcedWinnerItem else {
+            return nil
+        }
+        return items.firstIndex(of: forcedWinnerItem)
     }
 
     private static func normalizedWeights(_ weights: [Double], count: Int) -> [Double] {
@@ -626,19 +667,22 @@ struct RouletteEditorView: View {
     @State private var draftItems: [String]
     @State private var draggingItem: String?
     @State private var isShowingWeightSettings = false
+    @State private var isShowingRiggedModeSettings = false
     @State private var itemWeights: [Double]
     @State private var soundVolume: Double
+    @State private var forcedWinnerItem: String?
     @State private var templateTitle: String
     @State private var templateAlertTitle = ""
     @State private var templateAlertMessage = ""
     @State private var isShowingTemplateAlert = false
 
-    let onSave: ([String], [Double], Double) -> Void
+    let onSave: ([String], [Double], Double, String?) -> Void
 
-    init(items: [String], weights: [Double], currentTitle: String, soundVolume: Double, onSave: @escaping ([String], [Double], Double) -> Void) {
+    init(items: [String], weights: [Double], currentTitle: String, soundVolume: Double, forcedWinnerItem: String?, onSave: @escaping ([String], [Double], Double, String?) -> Void) {
         _draftItems = State(initialValue: items)
         _itemWeights = State(initialValue: weights.isEmpty ? Self.defaultWeights(for: items.count) : Self.normalizedWeights(from: weights))
         _soundVolume = State(initialValue: soundVolume)
+        _forcedWinnerItem = State(initialValue: forcedWinnerItem)
         let initialTemplateTitle = currentTitle == NSLocalizedString("rouletteScreenTitle", comment: "") ? "" : currentTitle
         _templateTitle = State(initialValue: initialTemplateTitle)
         self.onSave = onSave
@@ -679,6 +723,11 @@ struct RouletteEditorView: View {
                 itemWeights = updatedWeights
             }
         }
+        .sheet(isPresented: $isShowingRiggedModeSettings) {
+            RouletteRiggedModeView(items: cleanedItems.filter { !$0.isEmpty }, selectedItem: forcedWinnerItem) { selectedItem in
+                forcedWinnerItem = selectedItem
+            }
+        }
         .alert(isPresented: $isShowingTemplateAlert) {
             Alert(
                 title: Text(templateAlertTitle),
@@ -710,7 +759,8 @@ struct RouletteEditorView: View {
             Button(action: {
                 let savedItems = cleanedItems.filter { !$0.isEmpty }
                 let savedWeights = Self.normalizedWeights(from: Array(itemWeights.prefix(savedItems.count)))
-                onSave(savedItems, savedWeights, soundVolume)
+                let savedForcedWinner = savedItems.contains(forcedWinnerItem ?? "") ? forcedWinnerItem : nil
+                onSave(savedItems, savedWeights, soundVolume, savedForcedWinner)
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text(NSLocalizedString("rouletteDone", comment: ""))
@@ -875,6 +925,18 @@ struct RouletteEditorView: View {
                 Divider()
                     .padding(.leading, 56)
 
+                optionRow(
+                    icon: "theatermasks",
+                    title: NSLocalizedString("rouletteRiggedModeOption", comment: ""),
+                    trailingText: riggedModeStatus,
+                    action: {
+                        isShowingRiggedModeSettings = true
+                    }
+                )
+
+                Divider()
+                    .padding(.leading, 56)
+
                 soundVolumeRow
             }
             .background(Color.white)
@@ -967,10 +1029,19 @@ struct RouletteEditorView: View {
         return itemWeights == defaultWeights ? NSLocalizedString("rouletteOff", comment: "") : NSLocalizedString("rouletteOn", comment: "")
     }
 
+    private var riggedModeStatus: String {
+        forcedWinnerItem ?? NSLocalizedString("rouletteOff", comment: "")
+    }
+
     private func removeItem(at index: Int) {
         guard draftItems.indices.contains(index), draftItems.count > 2 else {
             return
         }
+
+        if draftItems[index].trimmingCharacters(in: .whitespacesAndNewlines) == forcedWinnerItem {
+            forcedWinnerItem = nil
+        }
+
         draftItems.remove(at: index)
         syncWeightsWithItems()
     }
@@ -1543,5 +1614,70 @@ struct RouletteTemplatePickerView: View {
         )
 
         templates = ruletteViewModel.fetchAllData()
+    }
+}
+
+struct RouletteRiggedModeView: View {
+    @Environment(\.presentationMode) private var presentationMode
+
+    let items: [String]
+    let onSave: (String?) -> Void
+
+    @State private var selectedItem: String?
+
+    init(items: [String], selectedItem: String?, onSave: @escaping (String?) -> Void) {
+        self.items = items
+        self.onSave = onSave
+        _selectedItem = State(initialValue: selectedItem)
+    }
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section {
+                    Button(action: {
+                        selectedItem = nil
+                    }) {
+                        riggedRow(title: NSLocalizedString("rouletteOff", comment: ""), isSelected: selectedItem == nil)
+                    }
+                }
+
+                Section(header: Text(NSLocalizedString("rouletteRiggedModeDescription", comment: ""))) {
+                    ForEach(items, id: \.self) { item in
+                        Button(action: {
+                            selectedItem = item
+                        }) {
+                            riggedRow(title: item, isSelected: selectedItem == item)
+                        }
+                    }
+                }
+            }
+            .navigationBarTitle(NSLocalizedString("rouletteRiggedModeOption", comment: ""), displayMode: .inline)
+            .navigationBarItems(
+                leading: Button(NSLocalizedString("close", comment: "")) {
+                    presentationMode.wrappedValue.dismiss()
+                },
+                trailing: Button(NSLocalizedString("rouletteDone", comment: "")) {
+                    onSave(selectedItem)
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
+        }
+    }
+
+    private func riggedRow(title: String, isSelected: Bool) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(.black)
+
+            Spacer()
+
+            if isSelected {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.blue)
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
