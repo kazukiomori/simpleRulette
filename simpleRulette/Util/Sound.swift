@@ -40,6 +40,19 @@ class Sound {
         self.init(fileNamed:fileNamed,volume:1.0,numberOfLoops:0)
     }
 
+    func playFromBeginning() {
+        player.currentTime = 0
+        player.play()
+    }
+
+    func setVolume(_ volume: Float) {
+        player.volume = volume
+    }
+
+    func reset() {
+        player.currentTime = 0
+    }
+
     //AVAudioPlayerのメソッドを流用。これで〇〇.player.play()でなく〇〇.play()で済む
     func play(){
         self.player.play()

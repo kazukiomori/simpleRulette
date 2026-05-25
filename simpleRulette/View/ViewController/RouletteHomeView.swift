@@ -42,8 +42,8 @@ struct RouletteHomeView: View {
             )
         }
         .fullScreenCover(isPresented: $isShowingEditor) {
-            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights, currentTitle: viewModel.title) { items, weights in
-                viewModel.updateConfiguration(items: items, weights: weights)
+            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights, currentTitle: viewModel.title, soundVolume: viewModel.soundVolume) { items, weights, soundVolume in
+                viewModel.updateConfiguration(items: items, weights: weights, soundVolume: soundVolume)
             }
         }
         .sheet(isPresented: $isShowingTemplatePicker) {
@@ -199,10 +199,16 @@ struct RouletteHomeView: View {
 }
 
 final class RouletteHomeViewModel: ObservableObject {
+    private static let soundVolumeKey = "rouletteSoundVolume"
+    private let stopAnimationDuration = 2.4
+    private let resultRevealDelay = 0.04
+    private let rollLeadTime = 0.08
+
     @Published var title: String
     @Published var items: [String]
     @Published var itemWeights: [Double]
     @Published var resultText: String
+    @Published var soundVolume: Double
     @Published var isSpinning = false
     @Published var rotationAngle = 0.0
 
@@ -218,7 +224,10 @@ final class RouletteHomeViewModel: ObservableObject {
     ]
 
     private var spinTimer: Timer?
+    private var pendingSoundTasks: [DispatchWorkItem] = []
     private let ruletteViewModel = RuletteViewModel()
+    private let drum = Sound(fileNamed: "drum.wav", volume: 0.5, numberOfLoops: -1)
+    private let roll = Sound(fileNamed: "roll.wav")
 
     init() {
         let savedRoulette = ruletteViewModel.fetchCurrentData()
@@ -237,6 +246,9 @@ final class RouletteHomeViewModel: ObservableObject {
         let savedWeights = savedEntries.map(\.1)
         itemWeights = savedItems.count >= 2 ? Self.normalizedWeights(savedWeights, count: savedItems.count) : []
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
+        let storedSoundVolume = UserDefaults.standard.object(forKey: Self.soundVolumeKey) as? Double
+        soundVolume = min(max(storedSoundVolume ?? 0.75, 0), 1)
+        updateSoundPlayersVolume()
     }
 
     func toggleSpin() {
@@ -252,12 +264,15 @@ final class RouletteHomeViewModel: ObservableObject {
         }
     }
 
-    func updateConfiguration(items updatedItems: [String], weights updatedWeights: [Double]) {
+    func updateConfiguration(items updatedItems: [String], weights updatedWeights: [Double], soundVolume updatedSoundVolume: Double) {
         let filtered = updatedItems
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
 
+        applySoundVolumePreference(updatedSoundVolume)
+
         guard filtered.count >= 2 else {
+            stopAllSounds()
             return
         }
 
@@ -267,6 +282,7 @@ final class RouletteHomeViewModel: ObservableObject {
         rotationAngle = 0
         stopTimer()
         isSpinning = false
+        stopAllSounds()
         ruletteViewModel.saveCurrentData(
             title: title,
             items: items,
@@ -294,6 +310,7 @@ final class RouletteHomeViewModel: ObservableObject {
         rotationAngle = 0
         stopTimer()
         isSpinning = false
+        stopAllSounds()
         ruletteViewModel.saveCurrentData(
             title: title,
             items: items,
@@ -305,6 +322,8 @@ final class RouletteHomeViewModel: ObservableObject {
         stopTimer()
         isSpinning = true
         resultText = NSLocalizedString("tapRuletteToStop", comment: "")
+        cancelPendingSoundTasks()
+        playDrumIfNeeded()
 
         spinTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] _ in
             self?.rotationAngle += 9
@@ -314,6 +333,9 @@ final class RouletteHomeViewModel: ObservableObject {
     private func stopSpin() {
         stopTimer()
         isSpinning = false
+        drum.stop()
+        drum.reset()
+        cancelPendingSoundTasks()
 
         let winningIndex = weightedWinningIndex() ?? Int.random(in: 0..<items.count)
         let segments = rouletteWheelSegments(weights: itemWeights, itemCount: items.count)
@@ -327,11 +349,16 @@ final class RouletteHomeViewModel: ObservableObject {
         let finalRotation = rotationAngle + delta + 1440
         let winningItem = items[winningIndex]
 
-        withAnimation(.easeOut(duration: 2.4)) {
+        withAnimation(.easeOut(duration: stopAnimationDuration)) {
             rotationAngle = finalRotation
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.45) { [weak self] in
+        let rollDelay = max(stopAnimationDuration - rollLeadTime, 0)
+        scheduleSound(after: rollDelay) { [weak self] in
+            self?.playRollIfNeeded()
+        }
+
+        scheduleSound(after: stopAnimationDuration + resultRevealDelay) { [weak self] in
             self?.resultText = winningItem
         }
     }
@@ -339,6 +366,56 @@ final class RouletteHomeViewModel: ObservableObject {
     private func stopTimer() {
         spinTimer?.invalidate()
         spinTimer = nil
+    }
+
+    private func applySoundVolumePreference(_ volume: Double) {
+        soundVolume = min(max(volume, 0), 1)
+        UserDefaults.standard.set(soundVolume, forKey: Self.soundVolumeKey)
+        updateSoundPlayersVolume()
+        if soundVolume == 0 {
+            stopAllSounds()
+        }
+    }
+
+    private func playDrumIfNeeded() {
+        guard soundVolume > 0 else {
+            return
+        }
+        drum.stop()
+        drum.playFromBeginning()
+    }
+
+    private func playRollIfNeeded() {
+        guard soundVolume > 0 else {
+            return
+        }
+        roll.stop()
+        roll.playFromBeginning()
+    }
+
+    private func stopAllSounds() {
+        cancelPendingSoundTasks()
+        drum.stop()
+        drum.reset()
+        roll.stop()
+        roll.reset()
+    }
+
+    private func updateSoundPlayersVolume() {
+        let baseVolume = Float(soundVolume)
+        drum.setVolume(baseVolume * 0.5)
+        roll.setVolume(baseVolume)
+    }
+
+    private func scheduleSound(after delay: Double, action: @escaping () -> Void) {
+        let workItem = DispatchWorkItem(block: action)
+        pendingSoundTasks.append(workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+    }
+
+    private func cancelPendingSoundTasks() {
+        pendingSoundTasks.forEach { $0.cancel() }
+        pendingSoundTasks.removeAll()
     }
 
     private func weightedWinningIndex() -> Int? {
@@ -550,16 +627,18 @@ struct RouletteEditorView: View {
     @State private var draggingItem: String?
     @State private var isShowingWeightSettings = false
     @State private var itemWeights: [Double]
+    @State private var soundVolume: Double
     @State private var templateTitle: String
     @State private var templateAlertTitle = ""
     @State private var templateAlertMessage = ""
     @State private var isShowingTemplateAlert = false
 
-    let onSave: ([String], [Double]) -> Void
+    let onSave: ([String], [Double], Double) -> Void
 
-    init(items: [String], weights: [Double], currentTitle: String, onSave: @escaping ([String], [Double]) -> Void) {
+    init(items: [String], weights: [Double], currentTitle: String, soundVolume: Double, onSave: @escaping ([String], [Double], Double) -> Void) {
         _draftItems = State(initialValue: items)
         _itemWeights = State(initialValue: weights.isEmpty ? Self.defaultWeights(for: items.count) : Self.normalizedWeights(from: weights))
+        _soundVolume = State(initialValue: soundVolume)
         let initialTemplateTitle = currentTitle == NSLocalizedString("rouletteScreenTitle", comment: "") ? "" : currentTitle
         _templateTitle = State(initialValue: initialTemplateTitle)
         self.onSave = onSave
@@ -631,7 +710,7 @@ struct RouletteEditorView: View {
             Button(action: {
                 let savedItems = cleanedItems.filter { !$0.isEmpty }
                 let savedWeights = Self.normalizedWeights(from: Array(itemWeights.prefix(savedItems.count)))
-                onSave(savedItems, savedWeights)
+                onSave(savedItems, savedWeights, soundVolume)
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text(NSLocalizedString("rouletteDone", comment: ""))
@@ -792,6 +871,11 @@ struct RouletteEditorView: View {
                     icon: "paintpalette",
                     title: NSLocalizedString("rouletteColorOption", comment: "")
                 )
+
+                Divider()
+                    .padding(.leading, 56)
+
+                soundVolumeRow
             }
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -799,7 +883,7 @@ struct RouletteEditorView: View {
         }
     }
 
-    private func optionRow(icon: String, title: String, trailingText: String? = nil, action: (() -> Void)? = nil) -> some View {
+    private func optionRow(icon: String, title: String, trailingText: String? = nil, showsChevron: Bool = true, action: (() -> Void)? = nil) -> some View {
         Button(action: {
             action?()
         }) {
@@ -821,14 +905,46 @@ struct RouletteEditorView: View {
                         .foregroundColor(.gray)
                 }
 
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color.gray.opacity(0.7))
+                if showsChevron {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Color.gray.opacity(0.7))
+                }
             }
             .padding(.horizontal, 18)
             .frame(height: 72)
         }
         .buttonStyle(PlainButtonStyle())
+    }
+
+    private var soundVolumeRow: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 14) {
+                Image(systemName: "speaker.wave.3")
+                    .font(.system(size: 22, weight: .regular))
+                    .foregroundColor(.black)
+                    .frame(width: 28)
+
+                Text(NSLocalizedString("rouletteSoundVolumeOption", comment: ""))
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.black)
+
+                Spacer()
+
+                Text(soundVolumeSummary)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.gray)
+            }
+
+            Slider(value: $soundVolume, in: 0...1, step: 0.05)
+                .tint(.blue)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+    }
+
+    private var soundVolumeSummary: String {
+        "\(Int((soundVolume * 100).rounded()))%"
     }
 
     private var cleanedItems: [String] {

@@ -38,6 +38,7 @@
 "rouletteReorderHint" = "長押しして並び替えできます";
 "rouletteOptions" = "オプション";
 "rouletteWeightOption" = "重さ（当選確率）を設定";
+"rouletteSoundVolumeOption" = "効果音の音量";
 "rouletteOff" = "オフ";
 "rouletteOn" = "オン";
 "rouletteColorOption" = "色をカスタマイズ";
