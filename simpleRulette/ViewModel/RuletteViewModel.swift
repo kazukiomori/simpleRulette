@@ -24,12 +24,7 @@ class RuletteViewModel {
     }
 
     func saveCurrentData(title: String, items: [String], weights: [Int]) {
-        let rulette = Rulette(
-            title: title,
-            ruletteItems: items.enumerated().map { index, item in
-                RuletteItem(item: item, weight: weights[safe: index] ?? 0)
-            }
-        )
+        let rulette = buildRulette(id: UUID().uuidString, title: title, items: items, weights: weights)
         model.saveCurrentData(rulette: rulette)
     }
 
@@ -41,9 +36,24 @@ class RuletteViewModel {
     func fetchCurrentData() -> Rulette? {
         model.getCurrentRuletteData()
     }
+
+    func updateRuletteData(rulette: Rulette, title: String, items: [String], weights: [Int]) {
+        let updatedRulette = buildRulette(id: rulette.id, title: title, items: items, weights: weights)
+        model.updateData(rulette: updatedRulette)
+    }
     
     func deleteRuletteData(rulette: Rulette) {
         model.deleteData(rulette: rulette)
+    }
+
+    private func buildRulette(id: String, title: String, items: [String], weights: [Int]) -> Rulette {
+        Rulette(
+            id: id,
+            title: title,
+            ruletteItems: items.enumerated().map { index, item in
+                RuletteItem(item: item, weight: weights[safe: index] ?? 0)
+            }
+        )
     }
 }
 

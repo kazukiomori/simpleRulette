@@ -57,6 +57,15 @@ class RuletteModel {
     }
   }
 
+  func updateData(rulette: Rulette) {
+    var rulettes = getAllRuletteData()
+
+    if let index = rulettes.firstIndex(where: { $0.id == rulette.id }) {
+      rulettes[index] = rulette
+      save(rulettes)
+    }
+  }
+
     func deleteData(rulette: Rulette) {
     let filteredRulettes = getAllRuletteData().filter { $0.id != rulette.id }
     save(filteredRulettes)

@@ -29,7 +29,7 @@
 "rouletteEditItems" = "項目を編集";
 "rouletteHistory" = "履歴";
 "rouletteHelpTitle" = "使い方";
-"rouletteHelpBody" = "ルーレットはホイールかボタンのタップで回せます。項目を編集から内容を変更でき、履歴から直近の結果を確認できます。";
+"rouletteHelpBody" = "ルーレットはホイールかボタンのタップで回せます。項目を編集から内容を変更でき、テンプレートから選ぶで保存済みの内容を読み込めます。";
 "rouletteAddItem" = "項目を追加";
 "rouletteHistoryEmptyTitle" = "まだ履歴がありません";
 "rouletteHistoryEmptyBody" = "ルーレットを回すと、ここに結果が表示されます。";
@@ -54,6 +54,9 @@
 "rouletteTemplateSaveButton" = "この内容でテンプレート保存";
 "rouletteTemplateSavedTitle" = "保存しました";
 "rouletteTemplateSavedBody" = "%@ をテンプレートに保存しました。";
+"rouletteTemplateOverwrite" = "上書き";
+"rouletteTemplatesEmptyTitle" = "テンプレートがありません";
+"rouletteTemplatesEmptyBody" = "項目編集画面からテンプレートを保存すると、ここに表示されます。";
 
 // TemplateViewController
 "templates" = "テンプレート";

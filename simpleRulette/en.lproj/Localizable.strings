@@ -29,7 +29,7 @@
 "rouletteEditItems" = "Edit Items";
 "rouletteHistory" = "History";
 "rouletteHelpTitle" = "How to use";
-"rouletteHelpBody" = "You can spin the roulette by tapping the wheel or the main button. Use Edit Items to change the choices, and History to review recent results.";
+"rouletteHelpBody" = "You can spin the roulette by tapping the wheel or the main button. Use Edit Items to change the choices, and Select from templates to load saved setups.";
 "rouletteAddItem" = "Add Item";
 "rouletteHistoryEmptyTitle" = "No history yet";
 "rouletteHistoryEmptyBody" = "Spin the roulette and the results will appear here.";
@@ -54,6 +54,9 @@
 "rouletteTemplateSaveButton" = "Save this as a template";
 "rouletteTemplateSavedTitle" = "Saved";
 "rouletteTemplateSavedBody" = "%@ was saved as a template.";
+"rouletteTemplateOverwrite" = "Overwrite";
+"rouletteTemplatesEmptyTitle" = "No templates yet";
+"rouletteTemplatesEmptyBody" = "Templates saved from the edit screen will appear here.";
 
 // TemplateViewController
 "templates" = "Templates";

@@ -9,7 +9,7 @@ struct RouletteHomeView: View {
     @StateObject private var viewModel = RouletteHomeViewModel()
     @State private var isShowingHelp = false
     @State private var isShowingEditor = false
-    @State private var isShowingHistory = false
+    @State private var isShowingTemplatePicker = false
 
     var body: some View {
         ZStack {
@@ -46,8 +46,14 @@ struct RouletteHomeView: View {
                 viewModel.updateConfiguration(items: items, weights: weights)
             }
         }
-        .sheet(isPresented: $isShowingHistory) {
-            RouletteHistoryView(history: viewModel.history)
+        .sheet(isPresented: $isShowingTemplatePicker) {
+            RouletteTemplatePickerView(
+                currentTitle: viewModel.title,
+                currentItems: viewModel.items,
+                currentWeights: viewModel.itemWeights
+            ) { template in
+                viewModel.applyTemplate(template)
+            }
         }
     }
 
@@ -179,9 +185,9 @@ struct RouletteHomeView: View {
                 .frame(width: 1, height: 24)
 
             Button(action: {
-                isShowingHistory = true
+                isShowingTemplatePicker = true
             }) {
-                Label(NSLocalizedString("rouletteHistory", comment: ""), systemImage: "clock")
+                Label(NSLocalizedString("selectFromTemplates", comment: ""), systemImage: "square.stack")
                     .font(.system(size: 17, weight: .medium))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity)
@@ -197,7 +203,6 @@ final class RouletteHomeViewModel: ObservableObject {
     @Published var items: [String]
     @Published var itemWeights: [Double]
     @Published var resultText: String
-    @Published var history: [String] = []
     @Published var isSpinning = false
     @Published var rotationAngle = 0.0
 
@@ -259,7 +264,33 @@ final class RouletteHomeViewModel: ObservableObject {
         items = filtered
         itemWeights = Self.normalizedWeights(updatedWeights, count: filtered.count)
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
-        history.removeAll()
+        rotationAngle = 0
+        stopTimer()
+        isSpinning = false
+        ruletteViewModel.saveCurrentData(
+            title: title,
+            items: items,
+            weights: itemWeights.map { Int($0.rounded()) }
+        )
+    }
+
+    func applyTemplate(_ rulette: Rulette) {
+        let entries = rulette.ruletteItems.compactMap { entry -> (String, Double)? in
+            let trimmedItem = entry.item.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedItem.isEmpty else {
+                return nil
+            }
+            return (trimmedItem, Double(entry.weight))
+        }
+
+        guard entries.count >= 2 else {
+            return
+        }
+
+        title = rulette.title.isEmpty ? NSLocalizedString("rouletteScreenTitle", comment: "") : rulette.title
+        items = entries.map(\.0)
+        itemWeights = Self.normalizedWeights(entries.map(\.1), count: entries.count)
+        resultText = NSLocalizedString("rouletteInitialResult", comment: "")
         rotationAngle = 0
         stopTimer()
         isSpinning = false
@@ -302,7 +333,6 @@ final class RouletteHomeViewModel: ObservableObject {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.45) { [weak self] in
             self?.resultText = winningItem
-            self?.history.insert(winningItem, at: 0)
         }
     }
 
@@ -1294,38 +1324,108 @@ struct RouletteReorderDropDelegate: DropDelegate {
     }
 }
 
-struct RouletteHistoryView: View {
+struct RouletteTemplatePickerView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @State private var templates: [Rulette]
 
-    let history: [String]
+    let currentTitle: String
+    let currentItems: [String]
+    let currentWeights: [Double]
+    let onSelect: (Rulette) -> Void
+
+    private let ruletteViewModel = RuletteViewModel()
+
+    init(currentTitle: String, currentItems: [String], currentWeights: [Double], onSelect: @escaping (Rulette) -> Void) {
+        _templates = State(initialValue: RuletteViewModel().fetchAllData())
+        self.currentTitle = currentTitle
+        self.currentItems = currentItems
+        self.currentWeights = currentWeights
+        self.onSelect = onSelect
+    }
 
     var body: some View {
         NavigationView {
             Group {
-                if history.isEmpty {
+                if templates.isEmpty {
                     VStack(spacing: 12) {
-                        Image(systemName: "clock.badge.xmark")
+                        Image(systemName: "square.stack.3d.up.slash")
                             .font(.system(size: 34, weight: .regular))
                             .foregroundColor(.gray)
-                        Text(NSLocalizedString("rouletteHistoryEmptyTitle", comment: ""))
+                        Text(NSLocalizedString("rouletteTemplatesEmptyTitle", comment: ""))
                             .font(.system(size: 20, weight: .semibold))
-                        Text(NSLocalizedString("rouletteHistoryEmptyBody", comment: ""))
+                        Text(NSLocalizedString("rouletteTemplatesEmptyBody", comment: ""))
                             .font(.system(size: 15, weight: .regular))
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                     }
                     .padding(24)
                 } else {
-                    List(history, id: \.self) { item in
-                        Text(item)
-                            .font(.system(size: 18, weight: .medium))
+                    List(templates, id: \.id) { template in
+                        Button(action: {
+                            onSelect(template)
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(template.title.isEmpty ? NSLocalizedString("templates", comment: "") : template.title)
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundColor(.black)
+
+                                Text(template.ruletteItems.map(\.item).joined(separator: " / "))
+                                    .font(.system(size: 14, weight: .regular))
+                                    .foregroundColor(.gray)
+                                    .lineLimit(1)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                deleteTemplate(template)
+                            } label: {
+                                Label(NSLocalizedString("delete", comment: ""), systemImage: "trash")
+                            }
+                        }
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            Button {
+                                overwriteTemplate(template)
+                            } label: {
+                                Label(NSLocalizedString("rouletteTemplateOverwrite", comment: ""), systemImage: "arrow.triangle.2.circlepath")
+                            }
+                            .tint(.blue)
+                        }
                     }
                 }
             }
-            .navigationBarTitle(NSLocalizedString("rouletteHistory", comment: ""), displayMode: .inline)
+            .navigationBarTitle(NSLocalizedString("selectFromTemplates", comment: ""), displayMode: .inline)
             .navigationBarItems(trailing: Button(NSLocalizedString("close", comment: "")) {
                 presentationMode.wrappedValue.dismiss()
             })
         }
+    }
+
+    private func deleteTemplate(_ template: Rulette) {
+        ruletteViewModel.deleteRuletteData(rulette: template)
+        templates.removeAll { $0.id == template.id }
+    }
+
+    private func overwriteTemplate(_ template: Rulette) {
+        let trimmedItems = currentItems
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        guard trimmedItems.count >= 2 else {
+            return
+        }
+
+        let normalizedWeights = RouletteEditorView.normalizedWeights(from: Array(currentWeights.prefix(trimmedItems.count)))
+        let resolvedTitle = currentTitle == NSLocalizedString("rouletteScreenTitle", comment: "") ? template.title : currentTitle
+
+        ruletteViewModel.updateRuletteData(
+            rulette: template,
+            title: resolvedTitle,
+            items: trimmedItems,
+            weights: normalizedWeights.map { Int($0.rounded()) }
+        )
+
+        templates = ruletteViewModel.fetchAllData()
     }
 }
