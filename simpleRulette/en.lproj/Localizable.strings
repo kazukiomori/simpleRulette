@@ -9,17 +9,30 @@
 "placeholder" = "unset";
 
 // RuletteViewController
-"titleString" = "Title";
-"setData" = "Set a data";
+"titleString" = "Simple Roulette";
+"setData" = "Please add at least two items";
 "tapRulette" = "Tap the Rulette";
 "start" = "Start";
 "stop" = "Stop";
-"tapRuletteToStop" = "Tap roulette to stop";
+"tapRuletteToStop" = "Tap again to stop";
 "result" = "result is %@";
 "setAData" = "Set a data";
 "newAdditions" = "New additions";
 "selectFromTemplates" = "Select from templates";
 "close" = "Close";
+"rouletteScreenTitle" = "Simple Roulette";
+"rouletteTapHint" = "Tap to spin the wheel";
+"rouletteResultTitle" = "Result";
+"rouletteInitialResult" = "Not spun yet";
+"rouletteSpinButton" = "Spin";
+"rouletteStopButton" = "Stop";
+"rouletteEditItems" = "Edit Items";
+"rouletteHistory" = "History";
+"rouletteHelpTitle" = "How to use";
+"rouletteHelpBody" = "You can spin the roulette by tapping the wheel or the main button. Use Edit Items to change the choices, and History to review recent results.";
+"rouletteAddItem" = "Add Item";
+"rouletteHistoryEmptyTitle" = "No history yet";
+"rouletteHistoryEmptyBody" = "Spin the roulette and the results will appear here.";
 
 // TemplateViewController
 "templates" = "Templates";

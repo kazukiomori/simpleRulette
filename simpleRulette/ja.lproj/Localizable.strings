@@ -9,17 +9,30 @@
 "placeholder" = "未設定";
 
 // RuletteViewController
-"titleString" = "タイトル";
-"setData" = "データをセットしてください";
+"titleString" = "シンプルルーレット";
+"setData" = "項目を2つ以上設定してください";
 "tapRulette" = "ルーレットをタップしてスタート";
 "start" = "スタート";
 "stop" = "ストップ";
-"tapRuletteToStop" = "ルーレットをタップしてストップ";
+"tapRuletteToStop" = "もう一度タップで止まります";
 "result" = "結果は%@です";
 "setAData" = "データをセット";
 "newAdditions" = "新規追加";
 "selectFromTemplates" = "テンプレートから選ぶ";
 "close" = "閉じる";
+"rouletteScreenTitle" = "シンプルルーレット";
+"rouletteTapHint" = "タップでまわすことができます";
+"rouletteResultTitle" = "結果";
+"rouletteInitialResult" = "まだ回していません";
+"rouletteSpinButton" = "まわす";
+"rouletteStopButton" = "とめる";
+"rouletteEditItems" = "項目を編集";
+"rouletteHistory" = "履歴";
+"rouletteHelpTitle" = "使い方";
+"rouletteHelpBody" = "ルーレットはホイールかボタンのタップで回せます。項目を編集から内容を変更でき、履歴から直近の結果を確認できます。";
+"rouletteAddItem" = "項目を追加";
+"rouletteHistoryEmptyTitle" = "まだ履歴がありません";
+"rouletteHistoryEmptyBody" = "ルーレットを回すと、ここに結果が表示されます。";
 
 // TemplateViewController
 "templates" = "テンプレート";
