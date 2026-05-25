@@ -49,6 +49,11 @@
 "rouletteWeightTotal" = "Total Weight";
 "rouletteWeightHint" = "Adjust the values so the total weight adds up to 100%.";
 "rouletteSaveWeights" = "Save";
+"rouletteTemplateSectionTitle" = "Save as Template";
+"rouletteTemplateTitlePlaceholder" = "Enter a template name";
+"rouletteTemplateSaveButton" = "Save this as a template";
+"rouletteTemplateSavedTitle" = "Saved";
+"rouletteTemplateSavedBody" = "%@ was saved as a template.";
 
 // TemplateViewController
 "templates" = "Templates";

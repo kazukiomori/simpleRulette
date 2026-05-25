@@ -49,6 +49,11 @@
 "rouletteWeightTotal" = "合計の重さ";
 "rouletteWeightHint" = "すべての重さの合計は100%になるように調整してください。";
 "rouletteSaveWeights" = "保存する";
+"rouletteTemplateSectionTitle" = "テンプレートとして保存";
+"rouletteTemplateTitlePlaceholder" = "テンプレート名を入力";
+"rouletteTemplateSaveButton" = "この内容でテンプレート保存";
+"rouletteTemplateSavedTitle" = "保存しました";
+"rouletteTemplateSavedBody" = "%@ をテンプレートに保存しました。";
 
 // TemplateViewController
 "templates" = "テンプレート";

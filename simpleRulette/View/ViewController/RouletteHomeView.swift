@@ -42,7 +42,7 @@ struct RouletteHomeView: View {
             )
         }
         .fullScreenCover(isPresented: $isShowingEditor) {
-            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights) { items, weights in
+            RouletteEditorView(items: viewModel.items, weights: viewModel.itemWeights, currentTitle: viewModel.title) { items, weights in
                 viewModel.updateConfiguration(items: items, weights: weights)
             }
         }
@@ -350,7 +350,6 @@ struct RouletteWheelView: View {
         GeometryReader { geometry in
             let size = min(geometry.size.width, geometry.size.height)
             let radius = size / 2
-            let labelRadius = radius * 0.64
             let center = CGPoint(x: radius, y: radius)
             let segments = rouletteWheelSegments(weights: weights, itemCount: items.count)
 
@@ -364,14 +363,16 @@ struct RouletteWheelView: View {
                         startDegrees: -90,
                         endDegrees: 270,
                         middleDegrees: 90,
-                        targetRotationDegrees: 0
+                        targetRotationDegrees: 0,
+                        spanDegrees: 360
                     )
                     let startAngle = Angle.degrees(segment.startDegrees)
                     let endAngle = Angle.degrees(segment.endDegrees)
                     let middleAngle = Angle.degrees(segment.middleDegrees)
+                    let adjustedLabelRadius = labelRadius(for: segment.spanDegrees, baseRadius: radius)
                     let point = CGPoint(
-                        x: center.x + CGFloat(cos(middleAngle.radians)) * labelRadius,
-                        y: center.y + CGFloat(sin(middleAngle.radians)) * labelRadius
+                        x: center.x + CGFloat(cos(middleAngle.radians)) * adjustedLabelRadius,
+                        y: center.y + CGFloat(sin(middleAngle.radians)) * adjustedLabelRadius
                     )
 
                     SectorShape(startAngle: startAngle, endAngle: endAngle)
@@ -381,8 +382,12 @@ struct RouletteWheelView: View {
                         .stroke(Color.white, lineWidth: 2.5)
 
                     Text(item)
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.system(size: labelFontSize(for: segment.spanDegrees), weight: .bold))
                         .foregroundColor(Color(red: 0.24, green: 0.24, blue: 0.25))
+                        .multilineTextAlignment(.center)
+                        .lineLimit(segment.spanDegrees < 26 ? 1 : 2)
+                        .minimumScaleFactor(segment.spanDegrees < 26 ? 0.42 : 0.58)
+                        .frame(width: labelWidth(for: segment.spanDegrees, radius: radius))
                         .position(point)
                 }
 
@@ -405,6 +410,39 @@ struct RouletteWheelView: View {
                     .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
             }
             .rotationEffect(.degrees(rotationAngle))
+        }
+    }
+
+    private func labelFontSize(for spanDegrees: Double) -> Double {
+        switch spanDegrees {
+        case ..<18:
+            return 10
+        case ..<28:
+            return 11
+        case ..<40:
+            return 12
+        case ..<58:
+            return 14
+        default:
+            return 17
+        }
+    }
+
+    private func labelWidth(for spanDegrees: Double, radius: CGFloat) -> CGFloat {
+        let arcLength = radius * CGFloat(spanDegrees * .pi / 180) * 0.78
+        return max(32, min(110, arcLength))
+    }
+
+    private func labelRadius(for spanDegrees: Double, baseRadius: CGFloat) -> CGFloat {
+        switch spanDegrees {
+        case ..<20:
+            return baseRadius * 0.76
+        case ..<32:
+            return baseRadius * 0.72
+        case ..<48:
+            return baseRadius * 0.68
+        default:
+            return baseRadius * 0.62
         }
     }
 }
@@ -441,6 +479,7 @@ private struct RouletteWheelSegment {
     let endDegrees: Double
     let middleDegrees: Double
     let targetRotationDegrees: Double
+    let spanDegrees: Double
 }
 
 private func rouletteResolvedWeights(_ weights: [Double], itemCount: Int) -> [Double] {
@@ -467,7 +506,8 @@ private func rouletteWheelSegments(weights: [Double], itemCount: Int) -> [Roulet
             startDegrees: cumulativeDegrees - 90,
             endDegrees: cumulativeDegrees + spanDegrees - 90,
             middleDegrees: middleRelativeDegrees - 90,
-            targetRotationDegrees: (360 - middleRelativeDegrees).truncatingRemainder(dividingBy: 360)
+            targetRotationDegrees: (360 - middleRelativeDegrees).truncatingRemainder(dividingBy: 360),
+            spanDegrees: spanDegrees
         )
         cumulativeDegrees += spanDegrees
         return segment
@@ -480,12 +520,18 @@ struct RouletteEditorView: View {
     @State private var draggingItem: String?
     @State private var isShowingWeightSettings = false
     @State private var itemWeights: [Double]
+    @State private var templateTitle: String
+    @State private var templateAlertTitle = ""
+    @State private var templateAlertMessage = ""
+    @State private var isShowingTemplateAlert = false
 
     let onSave: ([String], [Double]) -> Void
 
-    init(items: [String], weights: [Double], onSave: @escaping ([String], [Double]) -> Void) {
+    init(items: [String], weights: [Double], currentTitle: String, onSave: @escaping ([String], [Double]) -> Void) {
         _draftItems = State(initialValue: items)
         _itemWeights = State(initialValue: weights.isEmpty ? Self.defaultWeights(for: items.count) : Self.normalizedWeights(from: weights))
+        let initialTemplateTitle = currentTitle == NSLocalizedString("rouletteScreenTitle", comment: "") ? "" : currentTitle
+        _templateTitle = State(initialValue: initialTemplateTitle)
         self.onSave = onSave
     }
 
@@ -507,6 +553,7 @@ struct RouletteEditorView: View {
                         itemsCard
                         addButton
                         reorderHint
+                        templateSection
                         optionsSection
                     }
                     .padding(.horizontal, 20)
@@ -522,6 +569,13 @@ struct RouletteEditorView: View {
             ) { updatedWeights in
                 itemWeights = updatedWeights
             }
+        }
+        .alert(isPresented: $isShowingTemplateAlert) {
+            Alert(
+                title: Text(templateAlertTitle),
+                message: Text(templateAlertMessage),
+                dismissButton: .default(Text(NSLocalizedString("close", comment: "")))
+            )
         }
     }
 
@@ -646,6 +700,44 @@ struct RouletteEditorView: View {
             .foregroundColor(Color.gray)
     }
 
+    private var templateSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("rouletteTemplateSectionTitle", comment: ""))
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(Color.gray)
+
+            VStack(alignment: .leading, spacing: 16) {
+                TextField(NSLocalizedString("rouletteTemplateTitlePlaceholder", comment: ""), text: $templateTitle)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 18)
+                    .frame(height: 56)
+                    .background(Color(red: 0.97, green: 0.97, blue: 0.96))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                Button(action: saveAsTemplate) {
+                    HStack(spacing: 10) {
+                        Image(systemName: "square.and.arrow.down")
+                            .font(.system(size: 18, weight: .semibold))
+
+                        Text(NSLocalizedString("rouletteTemplateSaveButton", comment: ""))
+                            .font(.system(size: 18, weight: .bold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(Color(red: 0.17, green: 0.53, blue: 0.95))
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+            .padding(18)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .shadow(color: Color.black.opacity(0.04), radius: 12, x: 0, y: 8)
+        }
+    }
+
     private var optionsSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(NSLocalizedString("rouletteOptions", comment: ""))
@@ -756,6 +848,36 @@ struct RouletteEditorView: View {
         } else {
             itemWeights = Self.defaultWeights(for: count)
         }
+    }
+
+    private func saveAsTemplate() {
+        let trimmedTitle = templateTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        let savedItems = cleanedItems.filter { !$0.isEmpty }
+
+        guard !trimmedTitle.isEmpty else {
+            templateAlertTitle = NSLocalizedString("error", comment: "")
+            templateAlertMessage = NSLocalizedString("rouletteTitleNotEntered", comment: "")
+            isShowingTemplateAlert = true
+            return
+        }
+
+        guard savedItems.count >= 2 else {
+            templateAlertTitle = NSLocalizedString("error", comment: "")
+            templateAlertMessage = NSLocalizedString("setData", comment: "")
+            isShowingTemplateAlert = true
+            return
+        }
+
+        let savedWeights = Self.normalizedWeights(from: Array(itemWeights.prefix(savedItems.count)))
+        RuletteViewModel().addData(
+            title: trimmedTitle,
+            items: savedItems,
+            weights: savedWeights.map { Int($0.rounded()) }
+        )
+        templateTitle = trimmedTitle
+        templateAlertTitle = NSLocalizedString("rouletteTemplateSavedTitle", comment: "")
+        templateAlertMessage = String(format: NSLocalizedString("rouletteTemplateSavedBody", comment: ""), trimmedTitle)
+        isShowingTemplateAlert = true
     }
 
     static func defaultWeights(for count: Int) -> [Double] {
