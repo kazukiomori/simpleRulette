@@ -39,7 +39,16 @@
 "rouletteOptions" = "オプション";
 "rouletteWeightOption" = "重さ（当選確率）を設定";
 "rouletteOff" = "オフ";
+"rouletteOn" = "オン";
 "rouletteColorOption" = "色をカスタマイズ";
+"rouletteItemFallback" = "項目%d";
+"rouletteWeightTitle" = "重さを設定";
+"rouletteReset" = "リセット";
+"rouletteWeightDescriptionTitle" = "項目ごとの当選しやすさを設定できます";
+"rouletteWeightDescriptionBody" = "重さが大きいほど、当たりやすくなります。";
+"rouletteWeightTotal" = "合計の重さ";
+"rouletteWeightHint" = "すべての重さの合計は100%になるように調整してください。";
+"rouletteSaveWeights" = "保存する";
 
 // TemplateViewController
 "templates" = "テンプレート";

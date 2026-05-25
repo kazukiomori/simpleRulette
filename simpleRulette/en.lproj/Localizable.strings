@@ -39,7 +39,16 @@
 "rouletteOptions" = "Options";
 "rouletteWeightOption" = "Set Weight (Win Rate)";
 "rouletteOff" = "Off";
+"rouletteOn" = "On";
 "rouletteColorOption" = "Customize Colors";
+"rouletteItemFallback" = "Item %d";
+"rouletteWeightTitle" = "Set Weight";
+"rouletteReset" = "Reset";
+"rouletteWeightDescriptionTitle" = "You can configure how likely each item is to win.";
+"rouletteWeightDescriptionBody" = "The larger the weight, the more likely it is to be selected.";
+"rouletteWeightTotal" = "Total Weight";
+"rouletteWeightHint" = "Adjust the values so the total weight adds up to 100%.";
+"rouletteSaveWeights" = "Save";
 
 // TemplateViewController
 "templates" = "Templates";

@@ -386,11 +386,14 @@ struct RouletteEditorView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var draftItems: [String]
     @State private var draggingItem: String?
+    @State private var isShowingWeightSettings = false
+    @State private var itemWeights: [Double]
 
     let onSave: ([String]) -> Void
 
     init(items: [String], onSave: @escaping ([String]) -> Void) {
         _draftItems = State(initialValue: items)
+        _itemWeights = State(initialValue: Self.defaultWeights(for: items.count))
         self.onSave = onSave
     }
 
@@ -418,6 +421,14 @@ struct RouletteEditorView: View {
                     .padding(.top, 10)
                     .padding(.bottom, 40)
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $isShowingWeightSettings) {
+            RouletteWeightSettingsView(
+                items: cleanedItemsForDisplay,
+                weights: itemWeights
+            ) { updatedWeights in
+                itemWeights = updatedWeights
             }
         }
     }
@@ -551,7 +562,11 @@ struct RouletteEditorView: View {
                 optionRow(
                     icon: "chart.bar.xaxis",
                     title: NSLocalizedString("rouletteWeightOption", comment: ""),
-                    trailingText: NSLocalizedString("rouletteOff", comment: "")
+                    trailingText: weightOptionStatus,
+                    action: {
+                        syncWeightsWithItems()
+                        isShowingWeightSettings = true
+                    }
                 )
 
                 Divider()
@@ -568,35 +583,56 @@ struct RouletteEditorView: View {
         }
     }
 
-    private func optionRow(icon: String, title: String, trailingText: String? = nil) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.system(size: 22, weight: .regular))
-                .foregroundColor(.black)
-                .frame(width: 28)
+    private func optionRow(icon: String, title: String, trailingText: String? = nil, action: (() -> Void)? = nil) -> some View {
+        Button(action: {
+            action?()
+        }) {
+            HStack(spacing: 14) {
+                Image(systemName: icon)
+                    .font(.system(size: 22, weight: .regular))
+                    .foregroundColor(.black)
+                    .frame(width: 28)
 
-            Text(title)
-                .font(.system(size: 18, weight: .medium))
-                .foregroundColor(.black)
-
-            Spacer()
-
-            if let trailingText {
-                Text(trailingText)
+                Text(title)
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(.gray)
-            }
+                    .foregroundColor(.black)
 
-            Image(systemName: "chevron.right")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(Color.gray.opacity(0.7))
+                Spacer()
+
+                if let trailingText {
+                    Text(trailingText)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.gray)
+                }
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color.gray.opacity(0.7))
+            }
+            .padding(.horizontal, 18)
+            .frame(height: 72)
         }
-        .padding(.horizontal, 18)
-        .frame(height: 72)
+        .buttonStyle(PlainButtonStyle())
     }
 
     private var cleanedItems: [String] {
         draftItems.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+
+    private var cleanedItemsForDisplay: [String] {
+        let items = cleanedItems.filter { !$0.isEmpty }
+        return items.count >= 2 ? items : draftItems.enumerated().map { index, item in
+            let trimmed = item.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? String(format: NSLocalizedString("rouletteItemFallback", comment: ""), index + 1) : trimmed
+        }
+    }
+
+    private var weightOptionStatus: String {
+        guard !itemWeights.isEmpty else {
+            return NSLocalizedString("rouletteOff", comment: "")
+        }
+        let defaultWeights = Self.defaultWeights(for: itemWeights.count)
+        return itemWeights == defaultWeights ? NSLocalizedString("rouletteOff", comment: "") : NSLocalizedString("rouletteOn", comment: "")
     }
 
     private func removeItem(at index: Int) {
@@ -604,6 +640,316 @@ struct RouletteEditorView: View {
             return
         }
         draftItems.remove(at: index)
+        syncWeightsWithItems()
+    }
+
+    private func syncWeightsWithItems() {
+        let count = max(cleanedItemsForDisplay.count, 2)
+        if itemWeights.count == count {
+            return
+        }
+
+        if itemWeights.isEmpty {
+            itemWeights = Self.defaultWeights(for: count)
+            return
+        }
+
+        let total = max(itemWeights.reduce(0, +), 1)
+        let scaled = Array(itemWeights.prefix(count)).map { ($0 / total) * 100 }
+        if scaled.count == count {
+            itemWeights = Self.normalizedWeights(from: scaled)
+        } else {
+            itemWeights = Self.defaultWeights(for: count)
+        }
+    }
+
+    static func defaultWeights(for count: Int) -> [Double] {
+        guard count > 0 else {
+            return []
+        }
+
+        let base = Array(repeating: floor(100.0 / Double(count)), count: count)
+        var weights = base
+        let diff = 100 - Int(weights.reduce(0, +))
+        if diff > 0, let lastIndex = weights.indices.last {
+            weights[lastIndex] += Double(diff)
+        }
+        return weights
+    }
+
+    static func normalizedWeights(from weights: [Double]) -> [Double] {
+        guard !weights.isEmpty else {
+            return []
+        }
+        let sum = max(weights.reduce(0, +), 1)
+        var normalized = weights.map { floor(($0 / sum) * 100) }
+        let remainder = 100 - Int(normalized.reduce(0, +))
+        if remainder > 0, let maxIndex = normalized.indices.max(by: { normalized[$0] < normalized[$1] }) {
+            normalized[maxIndex] += Double(remainder)
+        }
+        return normalized
+    }
+}
+
+struct RouletteWeightSettingsView: View {
+    @Environment(\.presentationMode) private var presentationMode
+
+    let items: [String]
+    let onSave: ([Double]) -> Void
+
+    @State private var weights: [Double]
+
+    init(items: [String], weights: [Double], onSave: @escaping ([Double]) -> Void) {
+        self.items = items
+        self.onSave = onSave
+        _weights = State(initialValue: weights.isEmpty ? RouletteEditorView.defaultWeights(for: items.count) : weights)
+    }
+
+    var body: some View {
+        ZStack {
+            Color(red: 0.98, green: 0.98, blue: 0.97)
+                .ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                weightTopBar
+
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 18) {
+                        descriptionBlock
+                        totalWeightCard
+                        itemWeightsCard
+                        noteCard
+                        saveButton
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, 30)
+                }
+            }
+        }
+    }
+
+    private var weightTopBar: some View {
+        HStack {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundColor(.black)
+                    .frame(width: 44, height: 44)
+            }
+
+            Spacer()
+
+            Text(NSLocalizedString("rouletteWeightTitle", comment: ""))
+                .font(.system(size: 20, weight: .bold))
+
+            Spacer()
+
+            Button(action: {
+                weights = RouletteEditorView.defaultWeights(for: items.count)
+            }) {
+                Text(NSLocalizedString("rouletteReset", comment: ""))
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.blue)
+                    .frame(width: 70, height: 44)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.top, 10)
+        .padding(.bottom, 12)
+        .background(Color.white)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.black.opacity(0.08))
+                .frame(height: 1)
+        }
+    }
+
+    private var descriptionBlock: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(NSLocalizedString("rouletteWeightDescriptionTitle", comment: ""))
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.black)
+
+            Text(NSLocalizedString("rouletteWeightDescriptionBody", comment: ""))
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.gray)
+        }
+    }
+
+    private var totalWeightCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text(NSLocalizedString("rouletteWeightTotal", comment: ""))
+                    .font(.system(size: 18, weight: .bold))
+                Spacer()
+                Text(totalSummary)
+                    .font(.system(size: 18, weight: .bold))
+            }
+
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.blue.opacity(0.15))
+                        .frame(height: 12)
+                    Capsule()
+                        .fill(Color.blue)
+                        .frame(width: proxy.size.width * min(totalWeight / 100.0, 1.0), height: 12)
+                }
+            }
+            .frame(height: 12)
+        }
+        .padding(20)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
+    }
+
+    private var itemWeightsCard: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                weightRow(index: index, item: item)
+
+                if index < items.count - 1 {
+                    Divider()
+                        .padding(.leading, 86)
+                }
+            }
+        }
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
+    }
+
+    private func weightRow(index: Int, item: String) -> some View {
+        VStack(spacing: 14) {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(rowBadgeColor(index: index))
+                    Text("\(index + 1)")
+                        .font(.system(size: 19, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                .frame(width: 40, height: 40)
+
+                Text(emoji(for: item))
+                    .font(.system(size: 32))
+                    .frame(width: 42)
+
+                Text(item)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.black)
+
+                Spacer()
+
+                Text(weightSummary(for: index))
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.black)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(Color.gray.opacity(0.65))
+            }
+
+            Slider(
+                value: Binding(
+                    get: { weights[safe: index] ?? 0 },
+                    set: { newValue in updateWeight(newValue, at: index) }
+                ),
+                in: 0...100,
+                step: 1
+            )
+            .tint(.blue)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+    }
+
+    private var noteCard: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "lightbulb")
+                .font(.system(size: 22, weight: .regular))
+                .foregroundColor(.blue)
+
+            Text(NSLocalizedString("rouletteWeightHint", comment: ""))
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.black.opacity(0.75))
+        }
+        .padding(18)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.black.opacity(0.05), lineWidth: 1)
+        )
+    }
+
+    private var saveButton: some View {
+        Button(action: {
+            onSave(normalizedWeights)
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Text(NSLocalizedString("rouletteSaveWeights", comment: ""))
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 74)
+                .background(Color.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+        .buttonStyle(PlainButtonStyle())
+        .padding(.top, 10)
+    }
+
+    private var totalWeight: Double {
+        normalizedWeights.reduce(0, +)
+    }
+
+    private var totalSummary: String {
+        let total = Int(totalWeight)
+        return "\(total)% (\(total))"
+    }
+
+    private var normalizedWeights: [Double] {
+        RouletteEditorView.normalizedWeights(from: weights)
+    }
+
+    private func weightSummary(for index: Int) -> String {
+        let value = Int(normalizedWeights[safe: index] ?? 0)
+        return "\(value)% (\(value))"
+    }
+
+    private func rowBadgeColor(index: Int) -> Color {
+        let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink]
+        return colors[index % colors.count]
+    }
+
+    private func emoji(for item: String) -> String {
+        let lowercased = item.lowercased()
+        if item.contains("ラーメン") || lowercased.contains("ramen") { return "🍜" }
+        if item.contains("寿司") || lowercased.contains("sushi") { return "🍣" }
+        if item.contains("ピザ") || lowercased.contains("pizza") { return "🍕" }
+        if item.contains("ハンバーガー") || lowercased.contains("burger") { return "🍔" }
+        if item.contains("ケーキ") || lowercased.contains("cake") { return "🍰" }
+        if item.contains("ドリンク") || lowercased.contains("drink") { return "🥤" }
+        if item.contains("おまかせ") || lowercased.contains("random") { return "❓" }
+        return "🎯"
+    }
+
+    private func updateWeight(_ value: Double, at index: Int) {
+        guard weights.indices.contains(index) else {
+            return
+        }
+        weights[index] = value
+    }
+}
+
+private extension Array {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }
 
