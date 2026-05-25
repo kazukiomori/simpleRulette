@@ -221,7 +221,7 @@ final class RouletteHomeViewModel: ObservableObject {
     private let ruletteViewModel = RuletteViewModel()
 
     init() {
-        let savedRoulette = ruletteViewModel.fetchCurrentData() ?? ruletteViewModel.fetchAllData().first
+        let savedRoulette = ruletteViewModel.fetchCurrentData()
         let savedEntries = (savedRoulette?.ruletteItems ?? []).compactMap { entry -> (String, Double)? in
             let trimmedItem = entry.item.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedItem.isEmpty else {
@@ -231,11 +231,11 @@ final class RouletteHomeViewModel: ObservableObject {
         }
         let savedItems = savedEntries.map(\.0)
 
-        let resolvedItems = savedItems.count >= 2 ? savedItems : ["映画", "カフェ", "散歩", "読書", "勉強", "運動", "昼寝", "買い物"]
+        let resolvedItems = savedItems.count >= 2 ? savedItems : []
         title = (savedRoulette?.title.isEmpty == false ? savedRoulette?.title : nil) ?? NSLocalizedString("rouletteScreenTitle", comment: "")
         items = resolvedItems
         let savedWeights = savedEntries.map(\.1)
-        itemWeights = savedItems.count >= 2 ? Self.normalizedWeights(savedWeights, count: savedItems.count) : RouletteEditorView.defaultWeights(for: resolvedItems.count)
+        itemWeights = savedItems.count >= 2 ? Self.normalizedWeights(savedWeights, count: savedItems.count) : []
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
     }
 
