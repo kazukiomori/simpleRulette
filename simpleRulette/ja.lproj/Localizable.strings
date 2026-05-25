@@ -33,6 +33,13 @@
 "rouletteAddItem" = "項目を追加";
 "rouletteHistoryEmptyTitle" = "まだ履歴がありません";
 "rouletteHistoryEmptyBody" = "ルーレットを回すと、ここに結果が表示されます。";
+"rouletteEditorDescription" = "ルーレットに表示する項目を編集できます";
+"rouletteDone" = "完了";
+"rouletteReorderHint" = "長押しして並び替えできます";
+"rouletteOptions" = "オプション";
+"rouletteWeightOption" = "重さ（当選確率）を設定";
+"rouletteOff" = "オフ";
+"rouletteColorOption" = "色をカスタマイズ";
 
 // TemplateViewController
 "templates" = "テンプレート";

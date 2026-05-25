@@ -41,7 +41,7 @@ struct RouletteHomeView: View {
                 dismissButton: .default(Text(NSLocalizedString("close", comment: "")))
             )
         }
-        .sheet(isPresented: $isShowingEditor) {
+        .fullScreenCover(isPresented: $isShowingEditor) {
             RouletteEditorView(items: viewModel.items) { items in
                 viewModel.updateItems(items)
             }
@@ -385,6 +385,7 @@ struct PointerTriangle: Shape {
 struct RouletteEditorView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var draftItems: [String]
+    @State private var draggingItem: String?
 
     let onSave: ([String]) -> Void
 
@@ -394,32 +395,240 @@ struct RouletteEditorView: View {
     }
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(draftItems.indices, id: \.self) { index in
-                    TextField(NSLocalizedString("placeholder", comment: ""), text: $draftItems[index])
-                }
-                .onDelete { offsets in
-                    draftItems.remove(atOffsets: offsets)
-                }
+        ZStack {
+            Color(red: 0.98, green: 0.98, blue: 0.97)
+                .ignoresSafeArea()
 
-                Button(action: {
-                    draftItems.append("")
-                }) {
-                    Label(NSLocalizedString("rouletteAddItem", comment: ""), systemImage: "plus")
+            VStack(spacing: 0) {
+                topBar
+
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        Text(NSLocalizedString("rouletteEditorDescription", comment: ""))
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(Color.gray)
+                            .padding(.top, 20)
+
+                        itemsCard
+                        addButton
+                        reorderHint
+                        optionsSection
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                    .padding(.bottom, 40)
                 }
             }
-            .navigationBarTitle(NSLocalizedString("rouletteEditItems", comment: ""), displayMode: .inline)
-            .navigationBarItems(
-                leading: Button(NSLocalizedString("close", comment: "")) {
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button(NSLocalizedString("save", comment: "")) {
-                    onSave(draftItems)
-                    presentationMode.wrappedValue.dismiss()
-                }
-            )
         }
+    }
+
+    private var topBar: some View {
+        HStack {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundColor(.black)
+                    .frame(width: 44, height: 44)
+            }
+
+            Spacer()
+
+            Text(NSLocalizedString("rouletteEditItems", comment: ""))
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.black)
+
+            Spacer()
+
+            Button(action: {
+                onSave(cleanedItems)
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Text(NSLocalizedString("rouletteDone", comment: ""))
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(Color.blue)
+                    .frame(width: 60, height: 44)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.top, 10)
+        .padding(.bottom, 12)
+        .background(Color.white)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.black.opacity(0.08))
+                .frame(height: 1)
+        }
+    }
+
+    private var itemsCard: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(draftItems.enumerated()), id: \.offset) { index, item in
+                editorRow(index: index, item: item)
+
+                if index < draftItems.count - 1 {
+                    Divider()
+                        .padding(.leading, 74)
+                }
+            }
+        }
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Color.black.opacity(0.05), radius: 14, x: 0, y: 8)
+    }
+
+    private func editorRow(index: Int, item: String) -> some View {
+        HStack(spacing: 14) {
+            Text("\(index + 1)")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.black)
+                .frame(width: 28, alignment: .leading)
+
+            TextField(NSLocalizedString("placeholder", comment: ""), text: $draftItems[index])
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundColor(.black)
+
+            Image(systemName: "line.3.horizontal")
+                .font(.system(size: 21, weight: .regular))
+                .foregroundColor(Color.gray.opacity(0.65))
+                .padding(.horizontal, 4)
+                .onDrag {
+                    draggingItem = item
+                    return NSItemProvider(object: NSString(string: item))
+                }
+
+            Button(action: {
+                removeItem(at: index)
+            }) {
+                Text(NSLocalizedString("delete", comment: ""))
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(Color.red)
+            }
+        }
+        .padding(.horizontal, 18)
+        .frame(height: 92)
+        .background(Color.white)
+        .onDrop(of: [.text], delegate: RouletteReorderDropDelegate(
+            item: item,
+            items: $draftItems,
+            draggingItem: $draggingItem
+        ))
+    }
+
+    private var addButton: some View {
+        Button(action: {
+            draftItems.append("")
+        }) {
+            Label(NSLocalizedString("rouletteAddItem", comment: ""), systemImage: "plus")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(Color.blue)
+                .frame(maxWidth: .infinity)
+                .frame(height: 68)
+                .background(Color.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Color.blue, lineWidth: 2)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    private var reorderHint: some View {
+        Text(NSLocalizedString("rouletteReorderHint", comment: ""))
+            .font(.system(size: 15, weight: .medium))
+            .foregroundColor(Color.gray)
+    }
+
+    private var optionsSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(NSLocalizedString("rouletteOptions", comment: ""))
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(Color.gray)
+
+            VStack(spacing: 0) {
+                optionRow(
+                    icon: "chart.bar.xaxis",
+                    title: NSLocalizedString("rouletteWeightOption", comment: ""),
+                    trailingText: NSLocalizedString("rouletteOff", comment: "")
+                )
+
+                Divider()
+                    .padding(.leading, 56)
+
+                optionRow(
+                    icon: "paintpalette",
+                    title: NSLocalizedString("rouletteColorOption", comment: "")
+                )
+            }
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .shadow(color: Color.black.opacity(0.04), radius: 12, x: 0, y: 8)
+        }
+    }
+
+    private func optionRow(icon: String, title: String, trailingText: String? = nil) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 22, weight: .regular))
+                .foregroundColor(.black)
+                .frame(width: 28)
+
+            Text(title)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(.black)
+
+            Spacer()
+
+            if let trailingText {
+                Text(trailingText)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(.gray)
+            }
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(Color.gray.opacity(0.7))
+        }
+        .padding(.horizontal, 18)
+        .frame(height: 72)
+    }
+
+    private var cleanedItems: [String] {
+        draftItems.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+
+    private func removeItem(at index: Int) {
+        guard draftItems.indices.contains(index), draftItems.count > 2 else {
+            return
+        }
+        draftItems.remove(at: index)
+    }
+}
+
+struct RouletteReorderDropDelegate: DropDelegate {
+    let item: String
+    @Binding var items: [String]
+    @Binding var draggingItem: String?
+
+    func dropEntered(info: DropInfo) {
+        guard let draggingItem, draggingItem != item,
+              let fromIndex = items.firstIndex(of: draggingItem),
+              let toIndex = items.firstIndex(of: item) else {
+            return
+        }
+
+        if items[toIndex] != draggingItem {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                items.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex)
+            }
+        }
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        draggingItem = nil
+        return true
     }
 }
 
