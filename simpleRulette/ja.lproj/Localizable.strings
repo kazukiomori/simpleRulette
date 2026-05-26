@@ -44,7 +44,6 @@
 "rouletteSoundVolumeOption" = "効果音の音量";
 "rouletteOff" = "オフ";
 "rouletteOn" = "オン";
-"rouletteColorOption" = "色をカスタマイズ";
 "rouletteItemFallback" = "項目%d";
 "rouletteWeightTitle" = "重さを設定";
 "rouletteReset" = "リセット";

@@ -918,14 +918,6 @@ struct RouletteEditorView: View {
                     .padding(.leading, 56)
 
                 optionRow(
-                    icon: "paintpalette",
-                    title: NSLocalizedString("rouletteColorOption", comment: "")
-                )
-
-                Divider()
-                    .padding(.leading, 56)
-
-                optionRow(
                     icon: "theatermasks",
                     title: NSLocalizedString("rouletteRiggedModeOption", comment: ""),
                     trailingText: riggedModeStatus,

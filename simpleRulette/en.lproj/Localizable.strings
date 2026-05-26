@@ -44,7 +44,6 @@
 "rouletteSoundVolumeOption" = "Sound Effect Volume";
 "rouletteOff" = "Off";
 "rouletteOn" = "On";
-"rouletteColorOption" = "Customize Colors";
 "rouletteItemFallback" = "Item %d";
 "rouletteWeightTitle" = "Set Weight";
 "rouletteReset" = "Reset";
