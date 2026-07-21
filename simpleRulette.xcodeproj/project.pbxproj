@@ -18,6 +18,7 @@
 		3B5044D529C899B8004B4425 /* RuletteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D429C899B8004B4425 /* RuletteViewModel.swift */; };
 		3B5044D729C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5044D629C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift */; };
 		3B9410C029CB3FAB006753E0 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9410BF29CB3FAB006753E0 /* Sound.swift */; };
+		3B0605FA2EE7FE2200BF28FE /* BannerAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0605FB2EE7FE2200BF28FE /* BannerAdView.swift */; };
 		3B9410C329CB451E006753E0 /* drum.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3B9410C229CB451E006753E0 /* drum.wav */; };
 		3B9410C529CB4528006753E0 /* roll.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3B9410C429CB4528006753E0 /* roll.wav */; };
 		3BC38F7329C153CC00158D35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F7229C153CC00158D35 /* AppDelegate.swift */; };
@@ -63,6 +64,7 @@
 		3B5044D429C899B8004B4425 /* RuletteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuletteViewModel.swift; sourceTree = "<group>"; };
 		3B5044D629C9E2A3004B4425 /* TemplateRuletteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateRuletteTableViewCell.swift; sourceTree = "<group>"; };
 		3B9410BF29CB3FAB006753E0 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		3B0605FB2EE7FE2200BF28FE /* BannerAdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAdView.swift; sourceTree = "<group>"; };
 		3B9410C229CB451E006753E0 /* drum.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drum.wav; sourceTree = "<group>"; };
 		3B9410C429CB4528006753E0 /* roll.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = roll.wav; sourceTree = "<group>"; };
 		3BC38F6F29C153CC00158D35 /* simpleRulette.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = simpleRulette.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +151,7 @@
 				3B5044C929C832A2004B4425 /* Alert */,
 				3B5044C829C8328C004B4425 /* Extension */,
 				3B9410BF29CB3FAB006753E0 /* Sound.swift */,
+				3B0605FB2EE7FE2200BF28FE /* BannerAdView.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B9410C029CB3FAB006753E0 /* Sound.swift in Sources */,
+				3B0605FA2EE7FE2200BF28FE /* BannerAdView.swift in Sources */,
 				3BC38F7729C153CC00158D35 /* RuletteViewController.swift in Sources */,
 				E1A1000129F1000000000001 /* RouletteHomeView.swift in Sources */,
 				3B5044BD29C38034004B4425 /* NewRuletteViewController.swift in Sources */,
@@ -588,7 +592,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = simpleRulette/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "「許可」するとお客様に最適化された広告が表示されます";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -620,7 +623,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = simpleRulette/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "「許可」するとお客様に最適化された広告が表示されます";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

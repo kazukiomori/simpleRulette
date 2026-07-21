@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import GoogleMobileAds
 
 struct RouletteHomeView: View {
     @StateObject private var viewModel = RouletteHomeViewModel()
@@ -28,6 +29,9 @@ struct RouletteHomeView: View {
                     resultView
                     spinButton
                     bottomActions
+                    if !AppRuntime.isRunningTests {
+                        bannerAdSection
+                    }
                 }
                 .padding(.horizontal, 28)
                 .padding(.top, 24)
@@ -211,6 +215,13 @@ struct RouletteHomeView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 8)
+    }
+
+    private var bannerAdSection: some View {
+        BannerAdView(adUnitID: "ca-app-pub-9554476195266174/5074035808")
+            .frame(width: AdSizeBanner.size.width, height: AdSizeBanner.size.height)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 8)
     }
 }
 

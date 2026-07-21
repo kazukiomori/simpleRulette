@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import AdSupport
-import AppTrackingTransparency
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -29,7 +27,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        requestAppTrackingTransparencyAuthorization()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -44,20 +41,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     }
     
-    private func requestAppTrackingTransparencyAuthorization() {
-        if #available(iOS 14.5, *) {
-            // .notDeterminedの場合にだけリクエスト呼び出しを行う
-            guard ATTrackingManager.trackingAuthorizationStatus == .notDetermined else { return }
-            
-            // タイミングを遅らせる為に処理を遅延させる
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-                    // リクエスト後の状態に応じた処理を行う
-                })
-            }
-        }
-    }
-
-
 }
 
