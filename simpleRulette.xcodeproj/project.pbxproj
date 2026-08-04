@@ -29,6 +29,7 @@
 		3BC38F8A29C153CF00158D35 /* simpleRuletteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F8929C153CF00158D35 /* simpleRuletteTests.swift */; };
 		3BC38F9429C153CF00158D35 /* simpleRuletteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F9329C153CF00158D35 /* simpleRuletteUITests.swift */; };
 		3BC38F9629C153CF00158D35 /* simpleRuletteUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC38F9529C153CF00158D35 /* simpleRuletteUITestsLaunchTests.swift */; };
+		3B0605FC2EE7FE2200BF28FE /* ScreenshotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0605FD2EE7FE2A00BF28FE /* ScreenshotUITests.swift */; };
 		E1A1000129F1000000000001 /* RouletteHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1000229F1000000000001 /* RouletteHomeView.swift */; };
 		D19A000129F0000000000001 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = D19A000329F0000000000001 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		3BC38F8F29C153CF00158D35 /* simpleRuletteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = simpleRuletteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BC38F9329C153CF00158D35 /* simpleRuletteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simpleRuletteUITests.swift; sourceTree = "<group>"; };
 		3BC38F9529C153CF00158D35 /* simpleRuletteUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = simpleRuletteUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3B0605FD2EE7FE2A00BF28FE /* ScreenshotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotUITests.swift; sourceTree = "<group>"; };
 		E1A1000229F1000000000001 /* RouletteHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouletteHomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -249,6 +251,7 @@
 			children = (
 				3BC38F9329C153CF00158D35 /* simpleRuletteUITests.swift */,
 				3BC38F9529C153CF00158D35 /* simpleRuletteUITestsLaunchTests.swift */,
+				3B0605FD2EE7FE2A00BF28FE /* ScreenshotUITests.swift */,
 			);
 			path = simpleRuletteUITests;
 			sourceTree = "<group>";
@@ -425,6 +428,7 @@
 			files = (
 				3BC38F9629C153CF00158D35 /* simpleRuletteUITestsLaunchTests.swift in Sources */,
 				3BC38F9429C153CF00158D35 /* simpleRuletteUITests.swift in Sources */,
+				3B0605FC2EE7FE2200BF28FE /* ScreenshotUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,7 +591,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = 596D95CQ24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = simpleRulette/Info.plist;
@@ -600,7 +604,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kazuki.simpleRulette;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -618,7 +622,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = 596D95CQ24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = simpleRulette/Info.plist;
@@ -631,7 +635,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kazuki.simpleRulette;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
