@@ -200,6 +200,7 @@ struct RouletteHomeView: View {
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity)
             }
+            .accessibilityIdentifier("editItemsButton")
 
             Rectangle()
                 .fill(Color.gray.opacity(0.25))
@@ -1138,6 +1139,7 @@ struct RouletteEditorView: View {
             .frame(height: 72)
         }
         .buttonStyle(PlainButtonStyle())
+        .accessibilityIdentifier(title)
     }
 
     private var soundVolumeRow: some View {
@@ -1810,6 +1812,7 @@ struct RouletteRiggedModeView: View {
                         }) {
                             riggedRow(title: item, isSelected: selectedItem == item)
                         }
+                        .accessibilityIdentifier(item)
                     }
                 }
             }
