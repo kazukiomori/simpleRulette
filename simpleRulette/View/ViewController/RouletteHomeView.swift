@@ -5,6 +5,7 @@
 
 import SwiftUI
 import GoogleMobileAds
+import CoreHaptics
 
 struct RouletteHomeView: View {
     @StateObject private var viewModel = RouletteHomeViewModel()
@@ -253,10 +254,13 @@ final class RouletteHomeViewModel: ObservableObject {
     ]
 
     private var spinTimer: Timer?
+    private var stopAnimationTimer: Timer?
+    private var lastHapticSegmentIndex: Int?
     private var pendingSoundTasks: [DispatchWorkItem] = []
     private let ruletteViewModel = RuletteViewModel()
     private let drum = Sound(fileNamed: "drum.wav", volume: 0.5, numberOfLoops: -1)
     private let roll = Sound(fileNamed: "roll.wav")
+    private let haptics = RouletteHaptics()
 
     init() {
         let savedRoulette = ruletteViewModel.fetchCurrentData()
@@ -313,6 +317,7 @@ final class RouletteHomeViewModel: ObservableObject {
         resultText = NSLocalizedString("rouletteInitialResult", comment: "")
         rotationAngle = 0
         stopTimer()
+        stopStopAnimationTimer()
         isSpinning = false
         stopAllSounds()
         ruletteViewModel.saveCurrentData(
@@ -342,6 +347,7 @@ final class RouletteHomeViewModel: ObservableObject {
         applyForcedWinnerPreference(nil, items: entries.map(\.0))
         rotationAngle = 0
         stopTimer()
+        stopStopAnimationTimer()
         isSpinning = false
         stopAllSounds()
         ruletteViewModel.saveCurrentData(
@@ -353,13 +359,18 @@ final class RouletteHomeViewModel: ObservableObject {
 
     private func startSpin() {
         stopTimer()
+        stopStopAnimationTimer()
         isSpinning = true
         resultText = NSLocalizedString("tapRuletteToStop", comment: "")
         cancelPendingSoundTasks()
         playDrumIfNeeded()
+        haptics.prepare()
+        lastHapticSegmentIndex = segmentIndex(at: rotationAngle)
 
         spinTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] _ in
-            self?.rotationAngle += 9
+            guard let self else { return }
+            self.rotationAngle += 9
+            self.playBoundaryHapticIfNeeded(at: self.rotationAngle, speedFactor: 1)
         }
     }
 
@@ -382,9 +393,7 @@ final class RouletteHomeViewModel: ObservableObject {
         let finalRotation = rotationAngle + delta + 1440
         let winningItem = items[winningIndex]
 
-        withAnimation(.easeOut(duration: stopAnimationDuration)) {
-            rotationAngle = finalRotation
-        }
+        animateStop(from: rotationAngle, to: finalRotation)
 
         let rollDelay = max(stopAnimationDuration - rollLeadTime, 0)
         scheduleSound(after: rollDelay) { [weak self] in
@@ -393,12 +402,80 @@ final class RouletteHomeViewModel: ObservableObject {
 
         scheduleSound(after: stopAnimationDuration + resultRevealDelay) { [weak self] in
             self?.resultText = winningItem
+            self?.haptics.playWinner()
         }
+    }
+
+    private func animateStop(from startAngle: Double, to finalAngle: Double) {
+        stopStopAnimationTimer()
+        let startTime = ProcessInfo.processInfo.systemUptime
+        let angleDelta = finalAngle - startAngle
+
+        stopAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] timer in
+            guard let self else {
+                timer.invalidate()
+                return
+            }
+
+            let elapsed = ProcessInfo.processInfo.systemUptime - startTime
+            let progress = min(max(elapsed / self.stopAnimationDuration, 0), 1)
+            // SwiftUIのeaseOutに近い三次イージング。角度を毎フレーム更新することで、
+            // 針が区画をまたぐ瞬間と触覚フィードバックを同期できる。
+            let easedProgress = 1 - pow(1 - progress, 3)
+            self.rotationAngle = startAngle + (angleDelta * easedProgress)
+            self.playBoundaryHapticIfNeeded(
+                at: self.rotationAngle,
+                speedFactor: pow(1 - progress, 2)
+            )
+
+            if progress >= 1 {
+                self.rotationAngle = finalAngle
+                timer.invalidate()
+                self.stopAnimationTimer = nil
+            }
+        }
+    }
+
+    private func playBoundaryHapticIfNeeded(at angle: Double, speedFactor: Double) {
+        guard let currentIndex = segmentIndex(at: angle) else {
+            return
+        }
+
+        defer { lastHapticSegmentIndex = currentIndex }
+        guard let previousIndex = lastHapticSegmentIndex, previousIndex != currentIndex else {
+            return
+        }
+
+        let clampedSpeed = min(max(speedFactor, 0), 1)
+        haptics.playTick(
+            intensity: Float(0.22 + (0.38 * clampedSpeed)),
+            sharpness: Float(0.42 + (0.48 * clampedSpeed))
+        )
+    }
+
+    private func segmentIndex(at rotation: Double) -> Int? {
+        let segments = rouletteWheelSegments(weights: itemWeights, itemCount: items.count)
+        guard !segments.isEmpty else {
+            return nil
+        }
+
+        let normalizedRotation = rotation.truncatingRemainder(dividingBy: 360)
+        let pointerAngle = (360 - normalizedRotation + 360).truncatingRemainder(dividingBy: 360)
+        return segments.firstIndex { segment in
+            let start = segment.startDegrees + 90
+            let end = segment.endDegrees + 90
+            return pointerAngle >= start && pointerAngle < end
+        } ?? segments.indices.last
     }
 
     private func stopTimer() {
         spinTimer?.invalidate()
         spinTimer = nil
+    }
+
+    private func stopStopAnimationTimer() {
+        stopAnimationTimer?.invalidate()
+        stopAnimationTimer = nil
     }
 
     private func applySoundVolumePreference(_ volume: Double) {
@@ -496,6 +573,78 @@ final class RouletteHomeViewModel: ObservableObject {
 
     private static func normalizedWeights(_ weights: [Double], count: Int) -> [Double] {
         rouletteResolvedWeights(weights, itemCount: count)
+    }
+}
+
+private final class RouletteHaptics {
+    private var engine: CHHapticEngine?
+    private let supportsHaptics = CHHapticEngine.capabilitiesForHardware().supportsHaptics
+
+    init() {
+        prepare()
+    }
+
+    func prepare() {
+        guard supportsHaptics else { return }
+
+        if engine == nil {
+            do {
+                let engine = try CHHapticEngine()
+                engine.playsHapticsOnly = true
+                engine.isAutoShutdownEnabled = true
+                engine.resetHandler = { [weak self] in
+                    try? self?.engine?.start()
+                }
+                self.engine = engine
+            } catch {
+                print("RouletteHaptics: failed to create engine — \(error.localizedDescription)")
+                return
+            }
+        }
+
+        do {
+            try engine?.start()
+        } catch {
+            print("RouletteHaptics: failed to start engine — \(error.localizedDescription)")
+        }
+    }
+
+    func playTick(intensity: Float, sharpness: Float) {
+        playTransientEvents([
+            (time: 0, intensity: intensity, sharpness: sharpness)
+        ])
+    }
+
+    func playWinner() {
+        playTransientEvents([
+            (time: 0, intensity: 0.58, sharpness: 0.55),
+            (time: 0.09, intensity: 0.72, sharpness: 0.68),
+            (time: 0.21, intensity: 1.0, sharpness: 0.82)
+        ])
+    }
+
+    private func playTransientEvents(_ values: [(time: TimeInterval, intensity: Float, sharpness: Float)]) {
+        guard supportsHaptics else { return }
+        prepare()
+
+        let events = values.map { value in
+            CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: value.intensity),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: value.sharpness)
+                ],
+                relativeTime: value.time
+            )
+        }
+
+        do {
+            let pattern = try CHHapticPattern(events: events, parameters: [])
+            let player = try engine?.makePlayer(with: pattern)
+            try player?.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            print("RouletteHaptics: failed to play pattern — \(error.localizedDescription)")
+        }
     }
 }
 
