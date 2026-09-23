@@ -229,9 +229,10 @@ struct RouletteHomeView: View {
 final class RouletteHomeViewModel: ObservableObject {
     private static let soundVolumeKey = "rouletteSoundVolume"
     private static let forcedWinnerItemKey = "rouletteForcedWinnerItem"
-    private let stopAnimationDuration = 2.4
     private let resultRevealDelay = 0.04
     private let rollLeadTime = 0.08
+    private let spinFrameInterval = 0.016
+    private let spinDegreesPerFrame = 9.0
 
     @Published var title: String
     @Published var items: [String]
@@ -367,9 +368,9 @@ final class RouletteHomeViewModel: ObservableObject {
         haptics.prepare()
         lastHapticSegmentIndex = segmentIndex(at: rotationAngle)
 
-        spinTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] _ in
+        spinTimer = Timer.scheduledTimer(withTimeInterval: spinFrameInterval, repeats: true) { [weak self] _ in
             guard let self else { return }
-            self.rotationAngle += 9
+            self.rotationAngle += self.spinDegreesPerFrame
             self.playBoundaryHapticIfNeeded(at: self.rotationAngle, speedFactor: 1)
         }
     }
@@ -390,42 +391,48 @@ final class RouletteHomeViewModel: ObservableObject {
             delta += 360
         }
 
-        let finalRotation = rotationAngle + delta + 1440
+        // 回転中の速度を保ったまま減速へ移り、余分な「調整回転」が目立たないよう
+        // 最低1周だけ追加して当選位置へ着地させる。
+        let finalRotation = rotationAngle + delta + 360
         let winningItem = items[winningIndex]
 
-        animateStop(from: rotationAngle, to: finalRotation)
+        let stopDuration = animateStop(from: rotationAngle, to: finalRotation)
 
-        let rollDelay = max(stopAnimationDuration - rollLeadTime, 0)
+        let rollDelay = max(stopDuration - rollLeadTime, 0)
         scheduleSound(after: rollDelay) { [weak self] in
             self?.playRollIfNeeded()
         }
 
-        scheduleSound(after: stopAnimationDuration + resultRevealDelay) { [weak self] in
+        scheduleSound(after: stopDuration + resultRevealDelay) { [weak self] in
             self?.resultText = winningItem
             self?.haptics.playWinner()
         }
     }
 
-    private func animateStop(from startAngle: Double, to finalAngle: Double) {
+    @discardableResult
+    private func animateStop(from startAngle: Double, to finalAngle: Double) -> TimeInterval {
         stopStopAnimationTimer()
         let startTime = ProcessInfo.processInfo.systemUptime
         let angleDelta = finalAngle - startAngle
+        let currentSpeed = spinDegreesPerFrame / spinFrameInterval
+        // 等減速度運動では移動距離 = 初速 × 時間 ÷ 2。
+        // この関係から時間を決めることで、通常回転から速度が跳ねずに減速へつながる。
+        let duration = min(max((2 * angleDelta) / currentSpeed, 1.15), 2.6)
 
-        stopAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] timer in
+        stopAnimationTimer = Timer.scheduledTimer(withTimeInterval: spinFrameInterval, repeats: true) { [weak self] timer in
             guard let self else {
                 timer.invalidate()
                 return
             }
 
             let elapsed = ProcessInfo.processInfo.systemUptime - startTime
-            let progress = min(max(elapsed / self.stopAnimationDuration, 0), 1)
-            // SwiftUIのeaseOutに近い三次イージング。角度を毎フレーム更新することで、
-            // 針が区画をまたぐ瞬間と触覚フィードバックを同期できる。
-            let easedProgress = 1 - pow(1 - progress, 3)
+            let progress = min(max(elapsed / duration, 0), 1)
+            // 等減速度運動。開始時は通常回転と同じ速度で、停止まで直線的に減速する。
+            let easedProgress = (2 * progress) - (progress * progress)
             self.rotationAngle = startAngle + (angleDelta * easedProgress)
             self.playBoundaryHapticIfNeeded(
                 at: self.rotationAngle,
-                speedFactor: pow(1 - progress, 2)
+                speedFactor: 1 - progress
             )
 
             if progress >= 1 {
@@ -434,6 +441,8 @@ final class RouletteHomeViewModel: ObservableObject {
                 self.stopAnimationTimer = nil
             }
         }
+
+        return duration
     }
 
     private func playBoundaryHapticIfNeeded(at angle: Double, speedFactor: Double) {
